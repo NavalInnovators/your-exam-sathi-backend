@@ -64,7 +64,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
     		AuthenticationException failed) throws IOException, ServletException {
-    	super.unsuccessfulAuthentication(request, response, failed);
+    	if (failed.getMessage().equalsIgnoreCase("Bad credentials")) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("User not found");
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Authentication failed");
+        }
     }
     
 

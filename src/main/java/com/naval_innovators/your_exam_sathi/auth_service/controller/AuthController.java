@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,6 @@ import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin
 @RequestMapping(path = "/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -40,6 +40,11 @@ public class AuthController {
 	    	Map<String, String> errorResponse = new HashMap<>();
 	        errorResponse.put("message", e.getMessage());
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);	    }
+	}
+	
+	@GetMapping("/test")
+	public String testend() {
+		return "OK TESTED";
 	}
 	
 	
