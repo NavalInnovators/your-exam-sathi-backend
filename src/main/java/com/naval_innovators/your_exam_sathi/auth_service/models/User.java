@@ -39,7 +39,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_tbl",
 indexes = {
 		@Index(name = "idx_username", columnList = "userName"),
-        @Index(name = "idx_email", columnList = "email")
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_phone",columnList = "phone")
 }
 )
 		
@@ -56,9 +57,14 @@ public class User {
 	@NotBlank(message = "Email is required")
     private String email;
 	
+	@Column(nullable = false,unique=true)
+	@NotBlank(message = "Phone is required")
+	private String phone;
+	
 	@Column(nullable = false)
 	@NotBlank(message = "Password is required")
 	private String password;
+	
 	
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")

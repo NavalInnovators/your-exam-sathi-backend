@@ -4,6 +4,7 @@ package com.naval_innovators.your_exam_sathi.auth_service.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,16 +27,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+  @Autowired
   private final UserServices userService;
 	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest){
 		try {
-	        String token = userService.registerNewUser(signupRequest);
+	        String token =userService.registerNewUser(signupRequest);
             Map<String, String> response = new HashMap<>();
-            response.put("token", token);
             response.put("message", "User registered successfully.");
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            response.put("token", token);
+            return new ResponseEntity<>(response,HttpStatus.CREATED);
 	    } catch (IllegalArgumentException e) {
 	    	Map<String, String> errorResponse = new HashMap<>();
 	        errorResponse.put("message", e.getMessage());
@@ -44,7 +46,7 @@ public class AuthController {
 	
 	@GetMapping("/test")
 	public String testend() {
-		return "OK TESTED";
+		return "OK TESTEDcc";
 	}
 	
 	

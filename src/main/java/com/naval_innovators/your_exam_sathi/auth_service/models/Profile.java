@@ -38,8 +38,6 @@ public class Profile {
 
 	private String lastName;
 
-	@Column(nullable = false)
-	private String phoneNumber;
 
 	@Column(length = 512)
 	private String avatarUrl;
@@ -56,6 +54,7 @@ public class Profile {
 
 	@Column(name = "date_of_birth")
 	private LocalDate dateOfBirth;
+	
 
 	@OneToOne
 	@JoinColumn(name ="user_id")
