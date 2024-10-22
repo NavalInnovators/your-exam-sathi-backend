@@ -64,7 +64,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 			Authentication authResult) throws IOException {
 		SecurityContextHolder.getContext().setAuthentication(authResult);
 		String email = authResult.getName();
-		String token = jwtUtil.generateToken(email);
+		String token = jwtUtil.createAccessToken(email);
 		response.setHeader("Authorization", "Bearer " + token);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

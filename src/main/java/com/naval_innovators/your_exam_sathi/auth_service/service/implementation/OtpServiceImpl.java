@@ -1,5 +1,8 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service.implementation;
 
+import java.util.Random;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class OtpServiceImpl implements OtpService {
 	private final RedisService otpRedisService;
 	private final JwtUtil jwtUtil;
+
 	@Override
 	public void sendOtp(String phone) {
 		String otp = generateOtp();
@@ -23,15 +27,21 @@ public class OtpServiceImpl implements OtpService {
 	}
 
 	@Override
-	public OtpResponse validateOtp(OtpRequest otpRequest) {
-		// TODO Auto-generated method stub
-		return null;
+	public String validateOtp(OtpRequest otpRequest) {
+		String message;
+		if (otpRedisService.validateOtp(otpRequest)) {
+			message = "Account Verified";
+		} else {
+			message = "Otp validation failed";
+		}
+		return message;
 	}
 
 	@Override
 	public String generateOtp() {
-		// TODO Auto-generated method stub
-		return null;
+		Random random = new Random();
+		int otp = 100000 + random.nextInt(900000);
+		return String.valueOf(otp);
 	}
 
 }
