@@ -1,6 +1,5 @@
 package com.naval_innovators.your_exam_sathi.auth_service.models;
 import java.time.LocalDate;
-import java.util.UUID;
 
 import com.naval_innovators.your_exam_sathi.auth_service.models.enums.Gender;
 
@@ -63,7 +62,10 @@ public class Profile {
 	@ManyToOne
 	@JoinColumn(name = "college_id")
 	private College college;
+	
 	@ManyToOne
-	@JoinColumn(name = "course_id")
-	private Course course;
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
+	
+	// user profile
 }
