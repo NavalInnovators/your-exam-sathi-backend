@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.UserProfile;
 import com.naval_innovators.your_exam_sathi.auth_service.models.enums.Gender;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,10 +106,21 @@ public class UserServiceImplementation implements UserServices {
 
 	@Override
 	public void updateUserProfile(Long userId, UserProfile updateProfile) {
+		// Validate if the input is empty or null
+		if (updateProfile == null || updateProfile.getFirstName() == null || updateProfile.getFirstName().isEmpty()) {
+			throw new IllegalArgumentException("First Name is required");
+		}
+		if (updateProfile.getLastName() == null || updateProfile.getLastName().isEmpty()) {
+			throw new IllegalArgumentException("Last Name is required");
+		}
+		if (updateProfile.getEmail() == null || updateProfile.getEmail().isEmpty()) {
+			throw new IllegalArgumentException("Email is required");
+		}
+
+		// Proceed with regular logic
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
-		// Update profile entity fields directly
 		Profile profile = user.getProfile();
 		profile.setFirstName(updateProfile.getFirstName());
 		profile.setLastName(updateProfile.getLastName());
@@ -115,7 +128,7 @@ public class UserServiceImplementation implements UserServices {
 
 		// Only update user fields if necessary
 		if (updateProfile.getUsername() != null) {
-			user.setUserName(updateProfile.getUsername());  // Avoid setting if it's not changed
+			user.setUserName(updateProfile.getUsername());
 		}
 		if (updateProfile.getEmail() != null) {
 			user.setEmail(updateProfile.getEmail());
@@ -124,13 +137,17 @@ public class UserServiceImplementation implements UserServices {
 			user.setPhone(updateProfile.getPhone());
 		}
 
-		// Set gender from the Profile
-		Gender genderEnum = Gender.valueOf(updateProfile.getGender().toUpperCase());
-		profile.setGender(genderEnum);
+		// Handle gender with proper validation
+		if (updateProfile.getGender() != null) {
+			try {
+				Gender genderEnum = Gender.valueOf(updateProfile.getGender().toUpperCase());
+				profile.setGender(genderEnum);
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Invalid Gender value");
+			}
+		}
 
-		// Save updated user entity
 		userRepository.save(user);
 	}
-
 
 }

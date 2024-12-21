@@ -3,6 +3,8 @@ package com.naval_innovators.your_exam_sathi.auth_service.dtos;
 import com.naval_innovators.your_exam_sathi.auth_service.models.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,20 +16,24 @@ import java.time.LocalDate;
 @Builder
 public class UserProfile {
 
-    @NotBlank
+    @NotEmpty(message = "First Name is required")
+    @NotNull(message = "First Name cannot be empty")
     private String firstName;
 
-    @NotBlank
+    @NotEmpty(message = "Last Name is required")
+    @NotNull(message = "Last Name cannot be empty")
     private String lastName;
 
     @NotBlank
     private String username;
 
-    @NotBlank
+    @NotNull(message = "Date of Birth is required")
     private LocalDate dateOfBirth;
     private String gender;
 
     @Email
+    @NotEmpty(message = "Email is required")
+    @NotNull(message = "Email cannot bee empty.")
     private String email;
 
     @NotBlank
