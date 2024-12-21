@@ -24,19 +24,17 @@ public class UserProfile {
     @NotNull(message = "Last Name cannot be empty")
     private String lastName;
 
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
-    @NotNull(message = "Date of Birth is required")
     private LocalDate dateOfBirth;
     private String gender;
 
     @Email
     @NotEmpty(message = "Email is required")
-    @NotNull(message = "Email cannot bee empty.")
+    @NotNull(message = "Email cannot bee empty")
     private String email;
 
-    @NotBlank
     private String phone;
 
     public UserProfile(User user) {

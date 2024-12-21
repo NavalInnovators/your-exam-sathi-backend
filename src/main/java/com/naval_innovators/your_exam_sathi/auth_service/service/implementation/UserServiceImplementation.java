@@ -127,18 +127,18 @@ public class UserServiceImplementation implements UserServices {
 		profile.setDateOfBirth(updateProfile.getDateOfBirth());
 
 		// Only update user fields if necessary
-		if (updateProfile.getUsername() != null) {
+		if (updateProfile.getUsername() != null ) {
 			user.setUserName(updateProfile.getUsername());
 		}
 		if (updateProfile.getEmail() != null) {
 			user.setEmail(updateProfile.getEmail());
 		}
-		if (updateProfile.getPhone() != null) {
+		if (updateProfile.getPhone() != null && !updateProfile.getGender().isEmpty()) {
 			user.setPhone(updateProfile.getPhone());
 		}
 
 		// Handle gender with proper validation
-		if (updateProfile.getGender() != null) {
+		if (updateProfile.getGender() != null && !updateProfile.getGender().isEmpty()) {
 			try {
 				Gender genderEnum = Gender.valueOf(updateProfile.getGender().toUpperCase());
 				profile.setGender(genderEnum);

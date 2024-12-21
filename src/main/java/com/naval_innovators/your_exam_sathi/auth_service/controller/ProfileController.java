@@ -36,7 +36,7 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             StringBuilder errors = new StringBuilder();
             bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("\n"));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors.toString());
         }
 
         userServices.updateUserProfile(userId, userProfile);
