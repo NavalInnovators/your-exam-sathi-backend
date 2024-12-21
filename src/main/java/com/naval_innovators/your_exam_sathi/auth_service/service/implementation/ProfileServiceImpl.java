@@ -19,7 +19,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final CourseRepository courseRepository;
     @Override
     public boolean enrollToCourse(Long profileId, Long courseId) {
-        Optional<Profile> profile = profileRepository.findById(1L);
+        Optional<Profile> profile = profileRepository.findById(profileId);
         Optional<Course> course = courseRepository.findById(courseId);
 
         if (profile.isPresent() && course.isPresent()) {
