@@ -45,8 +45,8 @@ public class SecurityConfiguration  {
 		  .csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(
         	  authorize -> authorize
-              .requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() 
-             .anyRequest().authenticated() // Require authentication for any other request
+              .requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/queries/submit", "/courses/all").permitAll() 
+             .anyRequest().permitAll() // Require authentication for any other request
 
           ).addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
