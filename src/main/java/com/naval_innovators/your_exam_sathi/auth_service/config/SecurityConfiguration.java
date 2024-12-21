@@ -36,21 +36,22 @@ public class SecurityConfiguration  {
 	public JwtUtil jwtUtil() {
 		return new JwtUtil();
 	}
-	
-	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtUtil());
-	        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
-		  http
-		  .csrf(csrf -> csrf.disable())
-          .authorizeHttpRequests(
-        	  authorize -> authorize
-              .requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() 
-             .anyRequest().authenticated() // Require authentication for any other request
 
-          ).addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtUtil());
+		customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
+		http
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(
+						authorize -> authorize
+								.requestMatchers("/api/auth/","/v3/api-docs/", "/swagger-ui/", "/swagger-ui.html").permitAll()
+								.anyRequest().permitAll()
+//             .anyRequest().authenticated() // Require authentication for any other request
+
+				).addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 	
 	
 	@Bean
