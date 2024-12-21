@@ -3,6 +3,8 @@ package com.naval_innovators.your_exam_sathi.auth_service.service.implementation
 import java.util.HashMap;
 import java.util.Map;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.UserProfile;
+import com.naval_innovators.your_exam_sathi.auth_service.models.enums.Gender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +21,6 @@ import com.naval_innovators.your_exam_sathi.auth_service.repository.UserReposito
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 //import auth_main.config.JwtUtil;
 //import auth_main.dtos.LoginRequest;
 //import auth_main.dtos.SignupRequest;
@@ -92,5 +92,45 @@ public class UserServiceImplementation implements UserServices {
 
 		// send otp to the phone and
 	}
+
+	@Override
+	public UserProfile getUserProfile(Long userId) {
+		//Logic for fetching user profile
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		return new UserProfile(user);
+	}
+
+	@Override
+	public void updateUserProfile(Long userId, UserProfile updateProfile) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		// Update profile entity fields directly
+		Profile profile = user.getProfile();
+		profile.setFirstName(updateProfile.getFirstName());
+		profile.setLastName(updateProfile.getLastName());
+		profile.setDateOfBirth(updateProfile.getDateOfBirth());
+
+		// Only update user fields if necessary
+		if (updateProfile.getUsername() != null) {
+			user.setUserName(updateProfile.getUsername());  // Avoid setting if it's not changed
+		}
+		if (updateProfile.getEmail() != null) {
+			user.setEmail(updateProfile.getEmail());
+		}
+		if (updateProfile.getPhone() != null) {
+			user.setPhone(updateProfile.getPhone());
+		}
+
+		// Set gender from the Profile
+		Gender genderEnum = Gender.valueOf(updateProfile.getGender().toUpperCase());
+		profile.setGender(genderEnum);
+
+		// Save updated user entity
+		userRepository.save(user);
+	}
+
 
 }
