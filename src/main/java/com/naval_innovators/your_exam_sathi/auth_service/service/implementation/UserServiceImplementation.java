@@ -5,8 +5,6 @@ import java.util.Map;
 
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.UserProfile;
 import com.naval_innovators.your_exam_sathi.auth_service.models.enums.Gender;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
