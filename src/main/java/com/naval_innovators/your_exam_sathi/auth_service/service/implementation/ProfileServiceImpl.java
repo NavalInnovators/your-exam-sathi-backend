@@ -6,10 +6,13 @@ import com.naval_innovators.your_exam_sathi.auth_service.repository.CourseReposi
 import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final CourseRepository courseRepository;
+
     @Override
     public boolean enrollToCourse(Long profileId, Long courseId) {
         Optional<Profile> profile = profileRepository.findById(profileId);
@@ -29,6 +33,12 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         return false;
+    }
 
+    @Override
+    public Set<Course> getCoursesByUserId(Long userId) {
+        return profileRepository.findByUserIdWithCourses(userId)
+        .orElseThrow(() -> new RuntimeException("You have not enrolled in any Course!"))
+        .getCourses();
     }
 }
