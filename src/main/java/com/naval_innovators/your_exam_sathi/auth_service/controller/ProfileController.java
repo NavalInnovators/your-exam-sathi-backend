@@ -20,11 +20,10 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/course/{courseId}/enroll")
-    public ResponseEntity<Map<String, Boolean>> enrollToCourse(@PathVariable long profileId,
-            @PathVariable long courseId) {
+    public ResponseEntity<Map<String, Boolean>> enrollToCourse(@PathVariable long profileId, @PathVariable long courseId) {
         Map<String, Boolean> response = new HashMap<>();
         response.put("enrolled", false);
-        if (profileService.enrollToCourse(profileId, courseId)) {
+        if (profileService.enrollToCourse(profileId,courseId)){
             response.put("enrolled", true);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }

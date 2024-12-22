@@ -2,8 +2,6 @@ package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
 import com.naval_innovators.your_exam_sathi.auth_service.models.Query;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.QueryRequest;
-import com.naval_innovators.your_exam_sathi.auth_service.models.Subject;
-import com.naval_innovators.your_exam_sathi.auth_service.repository.SubjectRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.service.QueryServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,6 @@ public class QueryController {
     @PostMapping("/submit")
     public ResponseEntity<String> submitQuery(@RequestBody @Valid QueryRequest queryRequest) {
         queryService.submitQuery(queryRequest);
-        return new ResponseEntity<>("Query is Successfully Created!!", HttpStatus.CREATED);
+        return new ResponseEntity<>("Query is Successfully Submitted!!", HttpStatus.CREATED);
     }
 }

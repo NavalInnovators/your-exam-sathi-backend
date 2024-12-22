@@ -12,8 +12,8 @@ public class QueryRequest {
     @NotBlank(message = "Query text cannot be empty.")
     private String query;
 
-    @NotNull(message = "Subject must be selected.")
-    private Long subjectId;
+    @NotNull(message = "Course must be selected.")
+    private Long courseId;
 
     @NotNull(message = "User must be specified.")
     private Long userId;

@@ -24,8 +24,8 @@ public class Query {
     private String query;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = false)  
-    private Subject subject;
+    @JoinColumn(name = "course_id", nullable = false)  
+    private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) 
