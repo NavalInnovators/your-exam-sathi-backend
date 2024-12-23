@@ -3,7 +3,6 @@ package com.naval_innovators.your_exam_sathi.auth_service.models;
 
 import java.time.LocalDate;
 import java.util.Set;
-
 import com.naval_innovators.your_exam_sathi.auth_service.models.enums.Gender;
 
 import jakarta.persistence.*;
@@ -47,16 +46,20 @@ public class Profile {
 	private LocalDate dateOfBirth;
 
 	@OneToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "college_id")
+	@JoinColumn(name = "college_id", nullable = false)
 	private College college;
 
 	@ManyToOne
 	@JoinColumn(name = "branch_id", nullable = false)
 	private Branch branch;
+
+	@ManyToOne
+	@JoinColumn(name = "university_id", nullable = false)
+	private University university;
 
 	@ManyToMany
 	@JoinTable(
