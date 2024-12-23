@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -27,7 +28,7 @@ public class Branch {
             joinColumns = @JoinColumn(name = "branch_id"), // Foreign key for Branch
             inverseJoinColumns = @JoinColumn(name = "college_id") // Foreign key for College
     )
-    private Set<College> colleges;
+    private Set<College> colleges = new HashSet<>();
 
     // One branch can have multiple Profiles
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)

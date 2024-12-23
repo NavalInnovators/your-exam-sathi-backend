@@ -4,6 +4,7 @@ import com.naval_innovators.your_exam_sathi.auth_service.dtos.EducationDetailsDT
 import com.naval_innovators.your_exam_sathi.auth_service.models.*;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.*;
 import com.naval_innovators.your_exam_sathi.auth_service.service.EducationDetailsService;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.mapper.EducationDetailsDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,39 +25,65 @@ public class EducationDetailsServiceImpl implements EducationDetailsService {
     @Autowired
     private BranchRepository branchRepository;
 
+    @Autowired
+    private EducationDetailsDtoMapper mapper;
+
     @Override
     public EducationDetailsDTO getEducationDetails(Long profileId) {
         Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
+                .orElseThrow(() -> {
+                    System.out.println("Profile ID not found: " + profileId);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found");
+                });
 
         if (profile.getUniversity() == null || profile.getCollege() == null || profile.getBranch() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incomplete education details");
         }
 
-        return EducationDetailsDTO.builder()
-                .profileId(profile.getId())
-                .universityName(profile.getUniversity().getName())
-                .collegeName(profile.getCollege().getName())
-                .branchName(profile.getBranch().getName())
-                .year(profile.getBranch().getYear())
-                .build();
+        return mapper.profileToEducationDetailsDTO(profile);
     }
 
     @Override
     public void saveEducationDetails(EducationDetailsDTO dto) {
-        Profile profile = profileRepository.findById(dto.getProfileId())
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
+        // Check if any of the fields are null or empty
+        if (dto.getUniversityName() == null || dto.getUniversityName().isEmpty() ||
+                dto.getCollegeName() == null || dto.getCollegeName().isEmpty() ||
+                dto.getBranchName() == null || dto.getBranchName().isEmpty()) {
 
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "University, College, or Branch is missing");
+        }
+
+        if (dto.getProfileId() == null || dto.getProfileId().toString().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Profile ID");
+        }
+
+        Profile profile = profileRepository.findById(dto.getProfileId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
+
+        // Handle university, college, and branch creation or retrieval
         University university = findOrCreateUniversity(dto.getUniversityName());
         College college = findOrCreateCollege(dto.getCollegeName());
-        Branch branch = findOrCreateBranch(dto.getBranchName());
+
+        Branch branch = null;
+        if (dto.getBranchName() != null) {
+            branch = findOrCreateBranch(dto.getBranchName());
+            branch.getColleges().add(college);
+            college.getBranches().add(branch);
+        }
 
         profile.setUniversity(university);
         profile.setCollege(college);
-        profile.setBranch(branch);
 
+        if (branch != null) {
+            profile.setBranch(branch);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Branch cannot be null");
+        }
+
+        // Save the profile with updated education details
         profileRepository.save(profile);
     }
+
 
     private University findOrCreateUniversity(String universityName) {
         return universityRepository.findByName(universityName)

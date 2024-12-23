@@ -46,19 +46,19 @@ public class Profile {
 	private LocalDate dateOfBirth;
 
 	@OneToOne
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "college_id", nullable = false)
+	@JoinColumn(name = "college_id")
 	private College college;
 
 	@ManyToOne
-	@JoinColumn(name = "branch_id", nullable = false)
+	@JoinColumn(name = "branch_id")
 	private Branch branch;
 
 	@ManyToOne
-	@JoinColumn(name = "university_id", nullable = false)
+	@JoinColumn(name = "university_id")
 	private University university;
 
 	@ManyToMany

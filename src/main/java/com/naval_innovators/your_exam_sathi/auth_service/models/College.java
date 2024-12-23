@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -23,10 +24,10 @@ public class College {
     private String name;
 
     @ManyToMany(mappedBy = "colleges") // Inverse side of the Many-to-Many relationship
-    private Set<Branch> branches;
+    private Set<Branch> branches = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "university_id", nullable = false)
+    @JoinColumn(name = "university_id")
     private University university;
 
     // One college can have multiple Profiles
