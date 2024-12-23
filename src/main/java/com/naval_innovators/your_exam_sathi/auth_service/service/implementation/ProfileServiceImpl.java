@@ -1,5 +1,7 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service.implementation;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.mappers.ProfileDtoMapper;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.CourseRepository;
@@ -8,7 +10,9 @@ import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,6 +21,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final CourseRepository courseRepository;
+    private final ProfileDtoMapper profileDtoMapper;
     @Override
     public boolean enrollToCourse(Long profileId, Long courseId) {
         Optional<Profile> profile = profileRepository.findById(profileId);
@@ -30,5 +35,35 @@ public class ProfileServiceImpl implements ProfileService {
 
         return false;
 
+    }
+
+    @Override
+    public  Boolean setProfileDetails(Long profileId, ProfileDto profileDto) {
+        Optional<Profile> profile = profileRepository.findById(profileId);
+        if (profile.isPresent()) {
+            Profile profileEntity = profile.get();
+            profileEntity.setFirstName(profileDto.getFirstName());
+            profileEntity.setLastName(profileDto.getLastName());
+            profileEntity.setAvatarUrl(profileDto.getAvatarUrl());
+            profileEntity.getUser().setUserName(profileDto.getUserName());
+            profileEntity.getUser().setEmail(profileDto.getEmail());
+            profileEntity.getUser().setPhone(profileDto.getPhone());
+            profileEntity.setDateOfBirth(profileDto.getDateOfBirth());
+            profileEntity.setGender(profileDto.getGender());
+            profileRepository.save(profileEntity);
+
+            return true;
+        }
+        else{
+
+                    return false;
+        }
+
+    }
+
+    @Override
+    public ProfileDto getProfile(Long profileId) {
+
+        return profileDtoMapper.mapToDto(profileId);
     }
 }
