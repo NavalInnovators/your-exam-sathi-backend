@@ -1,6 +1,8 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service.implementation;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ExtraDetailsDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.mapper.ExtraDetailsDtoMapper;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.mapper.ProfileDtoMapper;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
@@ -23,6 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final CourseRepository courseRepository;
     private final ProfileDtoMapper profileDtoMapper;
+    private final ExtraDetailsDtoMapper extraDetailsDtoMapper;
 
     @Override
     public boolean enrollToCourse(Long profileId, Long courseId) {
@@ -59,6 +62,7 @@ public class ProfileServiceImpl implements ProfileService {
             profileEntity.getUser().setPhone(profileDto.getPhone());
             profileEntity.setDateOfBirth(profileDto.getDateOfBirth());
             profileEntity.setGender(profileDto.getGender());
+            profileEntity.setYear(profileDto.getYear());
             profileRepository.save(profileEntity);
 
             return true;
@@ -74,5 +78,10 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileDto getProfile(Long profileId) {
 
         return profileDtoMapper.mapToDto(profileId);
+    }
+
+    @Override
+    public boolean setExtraDetails(Long profileId, ExtraDetailsDto extraDetailsDto) {
+        return extraDetailsDtoMapper.mapExtraDetailsDto(profileId, extraDetailsDto);
     }
 }

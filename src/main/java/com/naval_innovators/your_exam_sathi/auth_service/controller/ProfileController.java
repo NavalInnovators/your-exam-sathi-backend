@@ -1,9 +1,11 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ExtraDetailsDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
@@ -74,6 +77,24 @@ public class ProfileController {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 
 
+    }
+
+    @PostMapping("/set-details")
+    public ResponseEntity<Map<String,Object>> setProfileDetails(@PathVariable Long profileId, @RequestBody ExtraDetailsDto extraDetailsDto) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("set-details", false);
+        try {
+            if (profileService.setExtraDetails(profileId, extraDetailsDto)) {
+                response.put("set-details", true);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        }catch (Exception e) {
+            //logging the error in terminal
+            log.error(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }

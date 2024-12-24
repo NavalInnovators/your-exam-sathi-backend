@@ -31,6 +31,8 @@ public class ProfileDto {
 
     private String phone;
 
+    int year;
+
 
 
 }

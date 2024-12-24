@@ -42,6 +42,9 @@ public class Profile {
 	@Column(name = "gender", length = 20)
 	private Gender gender;
 
+	@Column(name = "curr_year")
+	private int year;
+
 	@Column(name = "date_of_birth")
 	private LocalDate dateOfBirth;
 
@@ -54,7 +57,7 @@ public class Profile {
 	private College college;
 
 	@ManyToOne
-	@JoinColumn(name = "branch_id")
+	@JoinColumn(name = "branch_id", nullable = true)
 	private Branch branch;
 
 	@ManyToOne

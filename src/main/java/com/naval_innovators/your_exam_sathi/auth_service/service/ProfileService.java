@@ -1,5 +1,6 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ExtraDetailsDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,4 +15,6 @@ public interface ProfileService {
     public Boolean setProfileDetails(Long profileId, ProfileDto profileDto);
 
     public ProfileDto getProfile(Long profileId);
+
+    public boolean setExtraDetails(Long profileId, ExtraDetailsDto extraDetailsDto);
 }
