@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -22,6 +23,15 @@ public class CoursesController {
         Map<String,Boolean> response = new HashMap<>();
         response.put("success",true);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Course>> getAllCourses() {
+        List<Course> courses = coursesService.findAllCourses();
+        if(courses.isEmpty()){
+            return ResponseEntity.noContent().build(); // response code - 204(No Content)
+        }
+        return ResponseEntity.ok(courses);
     }
 
 }

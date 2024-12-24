@@ -4,6 +4,9 @@ import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.CourseRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.service.CoursesService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,5 +18,9 @@ public class CourseServiceImpl implements CoursesService {
     public void addCourse(Course course) {
         courseRepository.save(course);
 
+    }
+
+    public List<Course> findAllCourses() {
+        return courseRepository.findAll();
     }
 }
