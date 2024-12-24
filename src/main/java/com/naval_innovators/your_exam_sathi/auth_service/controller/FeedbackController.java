@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/feedback")
+@RequestMapping("/api/user/feedback")
 public class FeedbackController {
 
     @Autowired
