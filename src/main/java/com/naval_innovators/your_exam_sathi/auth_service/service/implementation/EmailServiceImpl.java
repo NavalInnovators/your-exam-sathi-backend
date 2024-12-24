@@ -5,15 +5,11 @@ import com.naval_innovators.your_exam_sathi.auth_service.service.EmailService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-
 import com.naval_innovators.your_exam_sathi.auth_service.models.EmailDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-
-import java.io.File;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -23,26 +19,36 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-    private static final String FIXED_SUBJECT = "Welcome to Your Exam Sathi!";
+    private static final String FIXED_SUBJECT = "Welcome to Your Exam Sathi – Personalized Learning Awaits!";
     private static final String FIXED_MSG_BODY_TEMPLATE = """
-            Dear %s,
-            
-            Congratulations! Your registration with Exam Sathi is successful. You can now access all the tools and resources to prepare for your exams effectively.
-            
-            Log in at [Website URL] and start your journey today!
-            
-            For any assistance, contact us at [support email].
-            
-            Best regards,
-            Exam Sathi Team
+            Hi %s,
+
+            Welcome to Your Exam Sathi, your AI-powered study companion! 🎉
+
+            We’re excited to have you join a platform that’s designed to make your exam preparation smarter, faster, and more effective.
+
+            💡 Features tailored specially for you 🐈
+            Our platform leverages cutting-edge AI technology to:
+            ✅ Analyze your strengths and areas for improvement.
+            ✅ Personalize study plans just for you.
+            ✅ Recommend the best resources and practice tests tailored to your goals.
+
+            Get started today and unlock a seamless learning experience!
+
+            👉 Log in to Your Dashboard
+
+            If you have any questions or need help, feel free to reach out to us anytime.
+
+            Here’s to your success! 🚀
+            Team: Your Exam Sathi
             """;
 
     @Override
-    public String sendSimpleMail(EmailDetails details) {
+    public void sendSimpleMail(EmailDetails details) {
         try {
             // Validate recipient email
             if (details.getRecipient() == null || details.getRecipient().isEmpty()) {
-                return "Your email address not found, please check it again.";
+                throw new IllegalArgumentException("Recipient email address is missing.");
             }
 
             // Personalize the message
@@ -59,16 +65,12 @@ public class EmailServiceImpl implements EmailService {
 
             // Send email
             javaMailSender.send(mimeMessage);
-            return "Mail Sent Successfully";
-        } 
-        catch (MessagingException e) {
+        } catch (MessagingException e) {
             e.printStackTrace();
-            return "Error while sending mail!";
-        } 
-        catch (Exception e) {
+            throw new RuntimeException("Error while sending mail!");
+        } catch (Exception e) {
             e.printStackTrace();
-            return "Error while sending mail!";
+            throw new RuntimeException("Unexpected error occurred while sending mail!");
         }
     }
 }
-

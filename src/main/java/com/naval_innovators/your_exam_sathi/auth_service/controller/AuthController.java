@@ -18,8 +18,6 @@ import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.SignupRequest;
-import com.naval_innovators.your_exam_sathi.auth_service.models.EmailDetails;
-import com.naval_innovators.your_exam_sathi.auth_service.service.EmailService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
 
@@ -40,8 +38,6 @@ public class AuthController {
 	private final OtpService otpService;
 	@Autowired
 	private final JwtUtil jwtUtil;
-	// @Autowired
-	// private EmailService emailService;
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,
@@ -80,24 +76,4 @@ public class AuthController {
 	// public String testend() {
 	// return "OK TESTEDcc";
 	// }
-
-	// // Sending a simple Email
-	// @PostMapping("/sendMail")
-	// public ResponseEntity<String> sendMail(@RequestBody EmailRequest request) {
-	// 	EmailDetails details = new EmailDetails(
-	// 			request.getRecipient(),
-	// 			request.getAttachment(),
-	// 			request.getUsername());
-
-	// 	String response = emailService.sendSimpleMail(details);
-
-	// 	if (response.equals("Mail Sent Successfully")) {
-	// 		return ResponseEntity.ok(response);
-	// 	} else if (response.equals("Your email address not found, please check it again.")) {
-	// 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-	// 	} else {
-	// 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-	// 	}
-	// }
-
 }
