@@ -1,43 +1,61 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
 
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.UserProfile;
-import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
+import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/user")
+@CrossOrigin
+@RequiredArgsConstructor
+@RequestMapping("/api/profile/{profileId}")
 public class ProfileUpdateController {
 
-    @Autowired
-    private UserServices userServices;
+    private final ProfileService profileService;
 
-    @GetMapping("/profile/{userId}")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable long userId){
-
-        UserProfile userProfile = userServices.getUserProfile(userId);
-        return ResponseEntity.ok(userProfile);
-
-    }
-
-    @PutMapping("/profile/{userId}")
-    public ResponseEntity<String> updateUserProfile(
-            @PathVariable Long userId,
-            @RequestBody @Valid UserProfile userProfile,
-            BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            StringBuilder errors = new StringBuilder();
-            bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("\n"));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors.toString());
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getProfile(@PathVariable Long profileId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            ProfileDto profileDto = profileService.getProfile(profileId);
+            if (profileDto == null) {
+                response.put("profile", "NO PROFILE FOUND");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            response.put("profile", profileDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("profile", "ERROR: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
-        userServices.updateUserProfile(userId, userProfile);
-        return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Map<String,Object>> updateProfile(
+            @PathVariable Long profileId,
+            @RequestBody ProfileDto profileDto){
+        Map<String, Object> response = new HashMap<>();
+
+        try{
+            if(profileService.setProfileDetails(profileId, profileDto)){
+                response.put("update-profile", "SUCCESS");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else{
+                response.put("update-profile", "FAILED");
+                response.put("error", "Profile not found");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e){
+            response.put("update-profile", "FAILED");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+    
 }
