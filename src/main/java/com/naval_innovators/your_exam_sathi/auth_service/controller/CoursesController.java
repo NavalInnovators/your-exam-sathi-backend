@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CoursesController {
     private final CoursesService coursesService;
+
     @PostMapping("/add")
     public ResponseEntity<Map<String,Boolean>> addCourse(@RequestBody Course course) {
         coursesService.addCourse(course);
@@ -33,5 +34,4 @@ public class CoursesController {
         }
         return ResponseEntity.ok(courses);
     }
-
 }

@@ -18,6 +18,8 @@ import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.SignupRequest;
+import com.naval_innovators.your_exam_sathi.auth_service.models.EmailDetails;
+import com.naval_innovators.your_exam_sathi.auth_service.service.EmailService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
 
@@ -38,11 +40,14 @@ public class AuthController {
 	private final OtpService otpService;
 	@Autowired
 	private final JwtUtil jwtUtil;
+	// @Autowired
+	// private EmailService emailService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,HttpServletResponse httpResponse) {
+	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,
+			HttpServletResponse httpResponse) {
 		try {
-			Map<String,String> tokens = userService.registerNewUser(signupRequest);
+			Map<String, String> tokens = userService.registerNewUser(signupRequest);
 			Map<String, String> response = new HashMap<>();
 			response.put("message", "User registered successfully.");
 			response.put("token", tokens.get("accessToken"));
@@ -63,25 +68,36 @@ public class AuthController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PostMapping(path ="/otp/resend")
-	public ResponseEntity<?> resendOtp(@RequestBody String phone){
+	@PostMapping(path = "/otp/resend")
+	public ResponseEntity<?> resendOtp(@RequestBody String phone) {
 		otpService.sendOtp(phone);
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Otp send successfully.");
-		return new ResponseEntity<>(response,HttpStatus.OK);
-	}
-	
-	@GetMapping("/test")
-	public String testend() {
-		return "OK TESTEDcc";
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	// login already handled by spring security customauthentication filters.
+	// @GetMapping("/test")
+	// public String testend() {
+	// return "OK TESTEDcc";
+	// }
 
-//	@PostMapping("/login")
-//	public ResponseEntity<?> loginUser(@Validated @RequestBody LoginRequest loginRequest){
-////		userService.loginUser(loginRequest);
-//		return null;
-//	}
+	// // Sending a simple Email
+	// @PostMapping("/sendMail")
+	// public ResponseEntity<String> sendMail(@RequestBody EmailRequest request) {
+	// 	EmailDetails details = new EmailDetails(
+	// 			request.getRecipient(),
+	// 			request.getAttachment(),
+	// 			request.getUsername());
+
+	// 	String response = emailService.sendSimpleMail(details);
+
+	// 	if (response.equals("Mail Sent Successfully")) {
+	// 		return ResponseEntity.ok(response);
+	// 	} else if (response.equals("Your email address not found, please check it again.")) {
+	// 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	// 	} else {
+	// 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	// 	}
+	// }
 
 }
