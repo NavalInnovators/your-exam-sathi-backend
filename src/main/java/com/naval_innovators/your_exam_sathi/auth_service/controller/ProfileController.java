@@ -1,5 +1,6 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -41,4 +42,38 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+
+
+    @GetMapping("/get")
+    public ResponseEntity<Map<String,Object>> getProfile(@PathVariable Long profileId) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("profile", "NO PROFILE FOUND");
+        try {
+            ProfileDto profileDto = profileService.getProfile(profileId);
+            response.put("profile", profileDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @PostMapping("/set")
+    public ResponseEntity<Map<String,Object>> setProfile(@PathVariable Long profileId, @RequestBody ProfileDto profileDto) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("set-profile", "NO PROFILE FOUND");
+
+        if (profileService.setProfileDetails(profileId, profileDto)) {
+            response.put("set-profile", "SUCCESS");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+
+
+    }
+
 }
