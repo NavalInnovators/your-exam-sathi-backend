@@ -14,14 +14,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserProfile {
+public class ProfileUpdateDto {
 
     @NotEmpty(message = "First Name is required")
-    @NotNull(message = "First Name cannot be empty")
     private String firstName;
 
     @NotEmpty(message = "Last Name is required")
-    @NotNull(message = "Last Name cannot be empty")
     private String lastName;
 
     @NotBlank(message = "Username cannot be blank")
@@ -30,14 +28,13 @@ public class UserProfile {
     private LocalDate dateOfBirth;
     private String gender;
 
-    @Email
+    @Email(message = "Invalid email format")
     @NotEmpty(message = "Email is required")
-    @NotNull(message = "Email cannot bee empty")
     private String email;
 
     private String phone;
 
-    public UserProfile(User user) {
+    public ProfileUpdateDto(User user) {
         this.firstName = user.getProfile().getFirstName();
         this.lastName = user.getProfile().getLastName();
         this.email = user.getEmail();

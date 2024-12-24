@@ -1,8 +1,8 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
 
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.UserProfile;
-import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileUpdateDto;
+import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileUpdateService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileUpdateController {
 
     @Autowired
-    private UserServices userServices;
+    private ProfileUpdateService profileUpdateService;
 
     @GetMapping("/profile/{userId}")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable long userId){
+    public ResponseEntity<ProfileUpdateDto> getUserProfile(@PathVariable long userId){
 
-        UserProfile userProfile = userServices.getUserProfile(userId);
+        ProfileUpdateDto userProfile = profileUpdateService.getUserProfile(userId);
         return ResponseEntity.ok(userProfile);
 
     }
@@ -28,7 +28,7 @@ public class ProfileUpdateController {
     @PutMapping("/profile/{userId}")
     public ResponseEntity<String> updateUserProfile(
             @PathVariable Long userId,
-            @RequestBody @Valid UserProfile userProfile,
+            @RequestBody @Valid ProfileUpdateDto userProfile,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -37,7 +37,8 @@ public class ProfileUpdateController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors.toString());
         }
 
-        userServices.updateUserProfile(userId, userProfile);
+       profileUpdateService.updateUserProfile(userId, userProfile);
         return ResponseEntity.ok().build();
+
     }
 }
