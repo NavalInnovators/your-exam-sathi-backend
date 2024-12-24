@@ -72,8 +72,16 @@ public class AuthController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	// @GetMapping("/test")
-	// public String testend() {
-	// return "OK TESTEDcc";
-	// }
+	@GetMapping("/test")
+	public String testend() {
+		return "OK TESTEDcc";
+	}
+
+	// login already handled by spring security customauthentication filters.
+
+//	@PostMapping("/login")
+//	public ResponseEntity<?> loginUser(@Validated @RequestBody LoginRequest loginRequest){
+////		userService.loginUser(loginRequest);
+//		return null;
+//	}
 }
