@@ -40,9 +40,10 @@ public class AuthController {
 	private final JwtUtil jwtUtil;
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,HttpServletResponse httpResponse) {
+	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,
+			HttpServletResponse httpResponse) {
 		try {
-			Map<String,String> tokens = userService.registerNewUser(signupRequest);
+			Map<String, String> tokens = userService.registerNewUser(signupRequest);
 			Map<String, String> response = new HashMap<>();
 			response.put("message", "User registered successfully.");
 			response.put("token", tokens.get("accessToken"));
@@ -63,14 +64,14 @@ public class AuthController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PostMapping(path ="/otp/resend")
-	public ResponseEntity<?> resendOtp(@RequestBody String phone){
+	@PostMapping(path = "/otp/resend")
+	public ResponseEntity<?> resendOtp(@RequestBody String phone) {
 		otpService.sendOtp(phone);
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Otp send successfully.");
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/test")
 	public String testend() {
 		return "OK TESTEDcc";
@@ -83,5 +84,4 @@ public class AuthController {
 ////		userService.loginUser(loginRequest);
 //		return null;
 //	}
-
 }

@@ -39,8 +39,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Set<Course> getCoursesByUserId(Long userId) {
-        return profileRepository.findByUserIdWithCourses(userId)
+    public Set<Course> getCoursesByUserId(Long profileId) {
+        return profileRepository.findByUserIdWithCourses(profileId)
         .orElseThrow(() -> new RuntimeException("You have not enrolled in any Course!"))
         .getCourses();
     }

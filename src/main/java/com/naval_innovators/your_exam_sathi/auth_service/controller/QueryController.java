@@ -20,6 +20,6 @@ public class QueryController {
     @PostMapping("/submit")
     public ResponseEntity<String> submitQuery(@RequestBody @Valid QueryRequest queryRequest) {
         queryService.submitQuery(queryRequest);
-        return new ResponseEntity<>("Query is Successfully Submitted!!", HttpStatus.CREATED);
+        return new ResponseEntity<>("Query has been Successfully Submitted!!", HttpStatus.CREATED);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.SignupRequest;
+import com.naval_innovators.your_exam_sathi.auth_service.models.EmailDetails;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Role;
 import com.naval_innovators.your_exam_sathi.auth_service.models.User;
@@ -18,6 +19,7 @@ import com.naval_innovators.your_exam_sathi.auth_service.models.enums.RoleName;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.RolesRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.UserRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.service.EmailService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
 
@@ -47,6 +49,7 @@ public class UserServiceImplementation implements UserServices {
 	private final RolesRepository rolesRepository;
 	private final JwtUtil jwtUtil;
 	private final OtpService otpService;
+	private final EmailService emailService; // Autowire the EmailService
 
 	@Override
 	@Transactional
@@ -85,6 +88,11 @@ public class UserServiceImplementation implements UserServices {
 //	    send otp to validate phone number
 		otpService.sendOtp(user.getPhone());
 //		send email to inform that the account had been created.
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setRecipient(user.getEmail());
+        emailDetails.setUsername(user.getUserName());
+        
+        emailService.sendSimpleMail(emailDetails);
 		
 //		we need to send the otp to the phone'
 		Map<String, String> tokens = new HashMap<String, String>();
