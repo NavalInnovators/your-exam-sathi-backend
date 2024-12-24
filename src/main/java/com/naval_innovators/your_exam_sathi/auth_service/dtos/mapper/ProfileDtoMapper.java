@@ -28,6 +28,7 @@ public class ProfileDtoMapper {
         profileDto.setGender(profileEntity.getGender());
         profileDto.setPhone(profileEntity.getUser().getPhone());
         profileDto.setUserName(profileEntity.getUser().getUserName());
+        profileDto.setYear(profileEntity.getYear());
         return profileDto;
 
 
