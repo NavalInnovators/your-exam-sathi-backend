@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.EmailOtpRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.SignupRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
+import com.naval_innovators.your_exam_sathi.auth_service.service.implementation.RedisService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,13 +58,14 @@ public class AuthController {
 		}
 	}
 
-	@PostMapping(path = "/otp/validate")
-	public ResponseEntity<?> validateOtp(@Validated @RequestBody OtpRequest otpRequest) {
-		String message = otpService.validateOtp(otpRequest);
-		Map<String, String> response = new HashMap<>();
-		response.put("message", message);
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
+	// @PostMapping(path = "/otp/validate")
+	// public ResponseEntity<?> validateOtp(@Validated @RequestBody OtpRequest
+	// otpRequest) {
+	// String message = otpService.validateOtp(otpRequest);
+	// Map<String, String> response = new HashMap<>();
+	// response.put("message", message);
+	// return new ResponseEntity<>(response, HttpStatus.OK);
+	// }
 
 	@PostMapping(path = "/otp/resend")
 	public ResponseEntity<?> resendOtp(@RequestBody String phone) {
@@ -79,9 +82,22 @@ public class AuthController {
 
 	// login already handled by spring security customauthentication filters.
 
-//	@PostMapping("/login")
-//	public ResponseEntity<?> loginUser(@Validated @RequestBody LoginRequest loginRequest){
-////		userService.loginUser(loginRequest);
-//		return null;
-//	}
+	// @PostMapping("/login")
+	// public ResponseEntity<?> loginUser(@Validated @RequestBody LoginRequest
+	// loginRequest){
+	//// userService.loginUser(loginRequest);
+	// return null;
+	// }
+
+	@PostMapping(path = "/otp/validate")
+	public ResponseEntity<?> validateOtp(@Validated @RequestBody EmailOtpRequest emailOtpRequest) {
+		String message = otpService.validateOtp(emailOtpRequest);
+		Map<String, String> response = new HashMap<>();
+		response.put("message", message);
+		if (message.equals("Account Verified")) {
+			return new ResponseEntity<>(response, HttpStatus.OK);  
+		} else {
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);  
+		}
+	}
 }

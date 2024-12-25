@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.EmailOtpRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
@@ -26,16 +27,16 @@ public class OtpServiceImpl implements OtpService {
 //		send otp using twillio
 	}
 
-	@Override
-	public String validateOtp(OtpRequest otpRequest) {
-		String message;
-		if (otpRedisService.validateOtp(otpRequest)) {
-			message = "Account Verified";
-		} else {
-			message = "Otp validation failed";
-		}
-		return message;
-	}
+	// @Override
+	// public String validateOtp(OtpRequest otpRequest) {
+	// 	String message;
+	// 	if (otpRedisService.validateOtp(otpRequest)) {
+	// 		message = "Account Verified";
+	// 	} else {
+	// 		message = "Otp validation failed";
+	// 	}
+	// 	return message;
+	// }
 
 	@Override
 	public String generateOtp() {
@@ -44,4 +45,14 @@ public class OtpServiceImpl implements OtpService {
 		return String.valueOf(otp);
 	}
 
+	@Override
+	public String validateOtp(EmailOtpRequest emailOtpRequest) {
+		String message;
+		if (otpRedisService.validateOtp(emailOtpRequest)) {
+			message = "Account Verified";
+		} else {
+			message = "Otp validation failed";
+		}
+		return message;
+	}
 }

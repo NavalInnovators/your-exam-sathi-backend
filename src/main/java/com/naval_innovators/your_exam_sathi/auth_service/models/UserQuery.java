@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @Table(name = "user_query")
-public class Query {
+public class UserQuery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +24,16 @@ public class Query {
     private String query;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)  
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) 
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
     private LocalDate submissionDate;
+
+    @Column(nullable = false, columnDefinition = "TEXT DEFAULT ''")
+    private String answer;
 }
