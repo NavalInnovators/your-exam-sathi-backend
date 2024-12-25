@@ -1,15 +1,16 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service;
 
-import com.naval_innovators.your_exam_sathi.auth_service.models.Query;
+import com.naval_innovators.your_exam_sathi.auth_service.models.UserQuery;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.QueryRequest;
-import com.naval_innovators.your_exam_sathi.auth_service.models.User;
-import com.naval_innovators.your_exam_sathi.auth_service.repository.QueryRepository;
-import com.naval_innovators.your_exam_sathi.auth_service.repository.UserRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.UserQueryResponse;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface QueryServices {
 
-    public Query submitQuery(QueryRequest queryRequest);
+    public UserQuery submitQuery(QueryRequest queryRequest);
+    public List<UserQueryResponse> getUserQueries(Long userId);
 }

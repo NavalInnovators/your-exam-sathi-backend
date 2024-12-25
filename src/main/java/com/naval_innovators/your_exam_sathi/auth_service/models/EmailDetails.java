@@ -1,9 +1,5 @@
 package com.naval_innovators.your_exam_sathi.auth_service.models;
 
-import jakarta.validation.constraints.Size;
-
-// Java Program to Illustrate EmailDetails Class
-
 // Importing required classes
 import lombok.AllArgsConstructor;
 import lombok.Data;
