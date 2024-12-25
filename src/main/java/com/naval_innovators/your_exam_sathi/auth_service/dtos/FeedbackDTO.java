@@ -18,15 +18,9 @@ public class FeedbackDTO {
     @Min(value = 1, message = "Star rating must be at least 1")
     @Max(value = 5, message = "Star rating must be at most 5")
     private Integer starRating;
-<<<<<<< HEAD
 
-    private String Feedback; // Optional field
+    private String textFeedback; // Optional field
 
-=======
-
-    private String textFeedback;
-
->>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
     @NotNull(message = "Profile ID must not be null")
     private Long profileId;
 }
