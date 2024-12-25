@@ -42,7 +42,6 @@ public class ProfileController {
         try{
             Set<Course> courses = profileService.getCoursesByUserId(profileId);
             return ResponseEntity.ok(courses);
-            
         } 
         catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
