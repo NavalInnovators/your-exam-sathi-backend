@@ -20,6 +20,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback submitFeedback(FeedbackDTO feedbackDTO) {
+<<<<<<< HEAD
         Profile profile = profileRepository.findById(feedbackDTO.getProfileId())
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found."));
 
@@ -31,16 +32,39 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = Feedback.builder()
                 .starRating(feedbackDTO.getStarRating())
                 .feedback(feedbackDTO.getFeedback() != null ? feedbackDTO.getFeedback() : "")
+=======
+        if (feedbackDTO.getProfileId() == null) {
+            throw new IllegalArgumentException("Profile ID must not be null.");
+        }
+
+        Profile profile = profileRepository.findById(feedbackDTO.getProfileId())
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found."));
+
+        if (feedbackDTO.getStarRating() == null || feedbackDTO.getStarRating() < 1 || feedbackDTO.getStarRating() > 5) {
+            throw new IllegalArgumentException("Star rating must be between 1 and 5.");
+        }
+
+        Feedback feedback = Feedback.builder()
+                .starRating(feedbackDTO.getStarRating())
+                .textFeedback(feedbackDTO.getTextFeedback())
+>>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
                 .profile(profile)
                 .build();
 
         return feedbackRepository.save(feedback);
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
     @Override
     public List<Feedback> getAllFeedbacks() {
         return feedbackRepository.findAll();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
