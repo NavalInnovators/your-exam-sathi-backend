@@ -22,7 +22,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        String[] permittedUri = {"/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/course/all"};
+        String[] permittedUri = {"/api/auth/","/v3/api-docs", "/swagger-ui/", "/swagger-ui.html", "/api/course/all"};
         for (String s : permittedUri) {
             if (uri.startsWith(s)) {
                 filterChain.doFilter(request, response);
