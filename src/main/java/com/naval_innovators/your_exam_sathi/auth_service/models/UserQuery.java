@@ -28,8 +28,8 @@ public class UserQuery {
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "profile_id", nullable = false)
+    private Profile profile; // Changed from User to Profile
 
     @Column(nullable = false)
     private LocalDate submissionDate;

@@ -13,6 +13,6 @@ import java.util.List;
 @Repository
 public interface QueryRepository extends JpaRepository<UserQuery, Long> {
     @Query("SELECT new com.naval_innovators.your_exam_sathi.auth_service.dtos.UserQueryResponse(q.query, q.answer, q.submissionDate) " +
-           "FROM UserQuery q WHERE q.user.Id = :userId")
-    List<UserQueryResponse> findUserQueriesByUserId(@Param("userId") Long userId);
+           "FROM UserQuery q WHERE q.profile.Id = :profileId")
+    List<UserQueryResponse> findUserQueriesByProfileId(@Param("profileId") Long profileId);
 }
