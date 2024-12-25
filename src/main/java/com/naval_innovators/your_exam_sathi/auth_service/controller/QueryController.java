@@ -39,7 +39,6 @@ public class QueryController {
         }
 
         return userQueries;
-        
-    }
 
+    }
 }
