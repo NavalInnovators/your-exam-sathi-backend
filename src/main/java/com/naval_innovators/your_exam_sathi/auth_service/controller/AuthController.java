@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(path = "/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
 	@Autowired
 	private final UserServices userService;
