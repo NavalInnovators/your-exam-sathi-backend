@@ -2,6 +2,12 @@ package com.naval_innovators.your_exam_sathi.auth_service.config;
 
 import java.io.IOException;
 
+import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
+import com.naval_innovators.your_exam_sathi.auth_service.models.User;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.UserRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
+import com.naval_innovators.your_exam_sathi.auth_service.service.implementation.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,13 +33,20 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
 	private final JwtUtil jwtUtil;
 
+	private final ProfileRepository profileRepository;
+	private final UserRepository userRepository;
+
+
+
 
 //	custom login end point added.
-	public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+	public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, ProfileRepository profileRepository, UserRepository userRepository) {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
-	
-		this.setFilterProcessesUrl("/api/auth/login");
+        this.profileRepository = profileRepository;
+        this.userRepository = userRepository;
+
+        this.setFilterProcessesUrl("/api/auth/login");
 	}
 
 	@Override
@@ -65,10 +78,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		SecurityContextHolder.getContext().setAuthentication(authResult);
 		String email = authResult.getName();
 		String token = jwtUtil.createAccessToken(email);
+		User user = userRepository.findByEmail(email);
+		if (user == null) {
+			user = userRepository.findByUserName(email);
+		}
+		Long profileId = user.getProfile().getId();
+
 		response.setHeader("Authorization", "Bearer " + token);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write("{\"validated\": \"" + true + "\",\"token\": \"" + token + "\"}");
+		response.getWriter().write("{\"validated\": \"" + true + "\",\"token\": \"" + token + "\" , \"profileId\" : " + profileId + "}");
 	}
 
 	@Override

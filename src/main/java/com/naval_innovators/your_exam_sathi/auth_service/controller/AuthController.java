@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(path = "/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
 	@Autowired
 	private final UserServices userService;
@@ -45,11 +46,12 @@ public class AuthController {
 	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,
 			HttpServletResponse httpResponse) {
 		try {
-			Map<String, String> tokens = userService.registerNewUser(signupRequest);
-			Map<String, String> response = new HashMap<>();
+			Map<String, Object> tokens = userService.registerNewUser(signupRequest);
+			Map<String, Object> response = new HashMap<>();
 			response.put("message", "User registered successfully.");
 			response.put("token", tokens.get("accessToken"));
-			httpResponse.addCookie(jwtUtil.setHttpCookie(tokens.get("refreshToken")));
+			response.put("profileId", tokens.get("profileId"));
+			httpResponse.addCookie(jwtUtil.setHttpCookie((String) tokens.get("refreshToken")));
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
 			Map<String, String> errorResponse = new HashMap<>();

@@ -15,6 +15,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/queries")
 @RequiredArgsConstructor
+@CrossOrigin
 public class QueryController {
 
     private final QueryServices queryService;

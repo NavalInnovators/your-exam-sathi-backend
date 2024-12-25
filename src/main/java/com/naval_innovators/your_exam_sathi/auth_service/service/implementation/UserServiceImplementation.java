@@ -49,7 +49,7 @@ public class UserServiceImplementation implements UserServices {
 
 	@Override
 	@Transactional
-	public Map<String,String> registerNewUser(SignupRequest signupRequest) {
+	public Map<String,Object> registerNewUser(SignupRequest signupRequest) {
 //		similar email and username filter
 		if (userRepository.existsByEmail(signupRequest.getEmail())) {
 			throw new IllegalArgumentException("Email already in use.");
@@ -80,6 +80,8 @@ public class UserServiceImplementation implements UserServices {
 		userRepository.save(user);
 //		need to generate the jwt authentication token
 		String accessToken = jwtUtil.createAccessToken(user.getEmail());
+		Long profileId = profile.getId();
+
 		String refreshToken = jwtUtil.createRefreshToken(user.getEmail());
 //	    send otp to validate phone number
 		otpService.sendOtp(user.getPhone());
@@ -91,9 +93,10 @@ public class UserServiceImplementation implements UserServices {
         emailService.sendVerificationMail(emailDetails);
 		
 //		we need to send the otp to the phone'
-		Map<String, String> tokens = new HashMap<String, String>();
+		Map<String, Object> tokens = new HashMap<>();
 		tokens.put("accessToken", accessToken);
 		tokens.put("refreshToken", refreshToken);
+		tokens.put("profileId",profileId);
 		return tokens;
 
 		// send otp to the phone and

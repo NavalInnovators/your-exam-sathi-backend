@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class CourseServiceImpl implements CoursesService {
     private final CourseRepository courseRepository;
 
+
     @Override
     public void addCourse(Course course) {
         courseRepository.save(course);
