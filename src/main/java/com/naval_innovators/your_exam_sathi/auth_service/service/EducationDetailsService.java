@@ -4,5 +4,5 @@ import com.naval_innovators.your_exam_sathi.auth_service.dtos.EducationDetailsDT
 
 public interface EducationDetailsService {
     EducationDetailsDTO getEducationDetails(Long profileId);
-    void saveEducationDetails(EducationDetailsDTO dto);
+    boolean setEducationDetails(EducationDetailsDTO dto, Long profileId);
 }

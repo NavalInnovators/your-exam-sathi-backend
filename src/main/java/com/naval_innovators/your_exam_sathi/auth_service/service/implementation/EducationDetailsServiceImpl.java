@@ -1,114 +1,82 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service.implementation;
 
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.EducationDetailsDTO;
-import com.naval_innovators.your_exam_sathi.auth_service.models.*;
-import com.naval_innovators.your_exam_sathi.auth_service.repository.*;
-import com.naval_innovators.your_exam_sathi.auth_service.service.EducationDetailsService;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.mapper.EducationDetailsDtoMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.BranchRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.CollegeRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.UniversityRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.service.EducationDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EducationDetailsServiceImpl implements EducationDetailsService {
 
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
+    private final EducationDetailsDtoMapper educationDetailsDtoMapper;
+    private final UniversityRepository universityRepository;
+    private final CollegeRepository collegeRepository;
+    private final BranchRepository branchRepository;
 
-    @Autowired
-    private UniversityRepository universityRepository;
+    @Override
+    public boolean setEducationDetails(EducationDetailsDTO educationDetailsDTO, Long profileId) {
 
-    @Autowired
-    private CollegeRepository collegeRepository;
+        if (!universityRepository.existsById(educationDetailsDTO.getUniversityId())) {
+            throw new RuntimeException("University not found with ID: " + educationDetailsDTO.getUniversityId());
+        }
 
-    @Autowired
-    private BranchRepository branchRepository;
+        // Check if college exists
+        if (!collegeRepository.existsById(educationDetailsDTO.getCollegeId())) {
+            throw new RuntimeException("College not found with ID: " + educationDetailsDTO.getCollegeId());
+        }
 
-    @Autowired
-    private EducationDetailsDtoMapper mapper;
+        // Check if branch exists
+        if (!branchRepository.existsById(educationDetailsDTO.getBranchId())) {
+            throw new RuntimeException("Branch not found with ID: " + educationDetailsDTO.getBranchId());
+        }
+
+        // Fetch profile by ID
+        Optional<Profile> profile = profileRepository.findById(profileId);
+
+        if (profile.isPresent()) {
+            try {
+                // Map DTO to Profile entity and update profile
+                Profile profileEntity = educationDetailsDtoMapper.mapToProfile(educationDetailsDTO, profile.get());
+                profileRepository.save(profileEntity);
+                return true;
+            } catch (Exception e) {
+                throw new RuntimeException("Error while setting education details: " + e.getMessage(), e);
+            }
+        } else {
+            throw new RuntimeException("Profile not found with ID: " + profileId);
+        }
+    }
 
     @Override
     public EducationDetailsDTO getEducationDetails(Long profileId) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> {
-                    System.out.println("Profile ID not found: " + profileId);
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found");
-                });
+        // Fetch profile by ID
+        Optional<Profile> profile = profileRepository.findById(profileId);
 
-        if (profile.getUniversity() == null || profile.getCollege() == null || profile.getBranch() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incomplete education details");
-        }
+        if (profile.isPresent()) {
+            try {
+                // Map Profile entity to DTO
+                EducationDetailsDTO educationDetailsDTO = new EducationDetailsDTO();
+                educationDetailsDTO.setUniversityId(profile.get().getUniversity().getId());
+                educationDetailsDTO.setCollegeId(profile.get().getCollege().getId());
+                educationDetailsDTO.setBranchId(profile.get().getBranch().getId());
+                educationDetailsDTO.setYear(profile.get().getYear());
 
-        return mapper.profileToEducationDetailsDTO(profile);
-    }
-
-    @Override
-    public void saveEducationDetails(EducationDetailsDTO dto) {
-        // Check if any of the fields are null or empty
-        if (dto.getUniversityName() == null || dto.getUniversityName().isEmpty() ||
-                dto.getCollegeName() == null || dto.getCollegeName().isEmpty() ||
-                dto.getBranchName() == null || dto.getBranchName().isEmpty()) {
-
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "University, College, or Branch is missing");
-        }
-
-        if (dto.getProfileId() == null || dto.getProfileId().toString().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Profile ID");
-        }
-
-        Profile profile = profileRepository.findById(dto.getProfileId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
-
-        // Handle university, college, and branch creation or retrieval
-        University university = findOrCreateUniversity(dto.getUniversityName());
-        College college = findOrCreateCollege(dto.getCollegeName());
-
-        Branch branch = null;
-        if (dto.getBranchName() != null) {
-            branch = findOrCreateBranch(dto.getBranchName());
-            branch.getColleges().add(college);
-            college.getBranches().add(branch);
-        }
-
-        profile.setUniversity(university);
-        profile.setCollege(college);
-
-        if (branch != null) {
-            profile.setBranch(branch);
+                return educationDetailsDTO;
+            } catch (Exception e) {
+                throw new RuntimeException("Error while fetching education details: " + e.getMessage(), e);
+            }
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Branch cannot be null");
+            throw new RuntimeException("Profile not found with ID: " + profileId);
         }
-
-        // Save the profile with updated education details
-        profileRepository.save(profile);
-    }
-
-
-    private University findOrCreateUniversity(String universityName) {
-        return universityRepository.findByName(universityName)
-                .orElseGet(() -> {
-                    University newUniversity = new University();
-                    newUniversity.setName(universityName);
-                    return universityRepository.save(newUniversity);
-                });
-    }
-
-    private College findOrCreateCollege(String collegeName) {
-        return collegeRepository.findByName(collegeName)
-                .orElseGet(() -> {
-                    College newCollege = new College();
-                    newCollege.setName(collegeName);
-                    return collegeRepository.save(newCollege);
-                });
-    }
-
-    private Branch findOrCreateBranch(String branchName) {
-        return branchRepository.findByName(branchName)
-                .orElseGet(() -> {
-                    Branch newBranch = new Branch();
-                    newBranch.setName(branchName);
-                    return branchRepository.save(newBranch);
-                });
     }
 }

@@ -23,14 +23,14 @@ public class College {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "colleges") // Inverse side of the Many-to-Many relationship
+    @ManyToMany(mappedBy = "colleges")
     private Set<Branch> branches = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "university_id")
+
     private University university;
 
-    // One college can have multiple Profiles
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Profile> profiles;
 }
