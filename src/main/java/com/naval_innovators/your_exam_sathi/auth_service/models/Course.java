@@ -1,6 +1,5 @@
 package com.naval_innovators.your_exam_sathi.auth_service.models;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +34,4 @@ public class Course {
 
 	@Column(nullable = false)
 	private Integer year;
-
-
 }
