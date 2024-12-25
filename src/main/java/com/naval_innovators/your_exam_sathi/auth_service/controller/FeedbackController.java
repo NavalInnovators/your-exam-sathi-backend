@@ -23,10 +23,13 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping("/submit")
-    public ResponseEntity<Map<String, Object>> submitFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) {
+    @PostMapping("/submit/{profileId}")
+    public ResponseEntity<Map<String, Object>> submitFeedback(
+            @PathVariable Long profileId,
+            @Valid @RequestBody FeedbackDTO feedbackDTO) {
         Map<String, Object> response = new HashMap<>();
         try {
+            feedbackDTO.setProfileId(profileId); // Set the profileId in the DTO
             Feedback feedback = feedbackService.submitFeedback(feedbackDTO);
             response.put("feedback", feedback);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
