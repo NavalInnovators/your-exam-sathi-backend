@@ -2,40 +2,46 @@ package com.naval_innovators.your_exam_sathi.auth_service.service.implementation
 
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.FeedbackDTO;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Feedback;
-import com.naval_innovators.your_exam_sathi.auth_service.models.User;
+import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.FeedbackRepository;
-import com.naval_innovators.your_exam_sathi.auth_service.repository.UserRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.service.FeedbackService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class FeedbackServiceImpl implements FeedbackService {
 
-    @Autowired
-    private FeedbackRepository feedbackRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final FeedbackRepository feedbackRepository;
+    private final ProfileRepository profileRepository;
 
     @Override
     public Feedback submitFeedback(FeedbackDTO feedbackDTO) {
-
-        if (feedbackDTO.getUserId() == null) {
-            throw new IllegalArgumentException("User ID must not be null");
+        if (feedbackDTO.getProfileId() == null) {
+            throw new IllegalArgumentException("Profile ID must not be null.");
         }
 
-        // Find the user by ID
-        User user = userRepository.findById(feedbackDTO.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Profile profile = profileRepository.findById(feedbackDTO.getProfileId())
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found."));
 
-        // Create a feedback entity
+        if (feedbackDTO.getStarRating() == null || feedbackDTO.getStarRating() < 1 || feedbackDTO.getStarRating() > 5) {
+            throw new IllegalArgumentException("Star rating must be between 1 and 5.");
+        }
+
         Feedback feedback = Feedback.builder()
+                .starRating(feedbackDTO.getStarRating())
                 .textFeedback(feedbackDTO.getTextFeedback())
-                .user(user)
+                .profile(profile)
                 .build();
 
-        // Save feedback
         return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks() {
+        return feedbackRepository.findAll();
     }
 }

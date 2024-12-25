@@ -19,11 +19,14 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "feedback", nullable = false)
     private String textFeedback;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Many feedbacks can belong to one user
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "star_rating", nullable = false)
+    private Integer starRating;
 
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 }
+
