@@ -28,7 +28,7 @@ public class University {
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<College> colleges;
 
-    // One University can have multiple Profiles
+
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Profile> profiles;
 
