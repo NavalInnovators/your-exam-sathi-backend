@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,9 +25,11 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfiguration  {
 
-public class SecurityConfiguration  {	
-	
+	private final CustomUserDetailsServiceImpl customUserDetailsService;
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -45,10 +48,12 @@ public class SecurityConfiguration  {
 		  .csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(
         	  authorize -> authorize
-              .requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/queries/submit", "/courses/all").permitAll() 
-             .anyRequest().permitAll() // Require authentication for any other request
-
-          ).addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+              .requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/course/all").permitAll()
+             .anyRequest().authenticated() // Require authentication for any other request
+          )
+				  .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				  .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				  .addFilterBefore(new JWTFilter(jwtUtil(),customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 	
