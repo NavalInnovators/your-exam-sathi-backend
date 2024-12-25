@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class QueryRequest {
 
@@ -15,7 +13,7 @@ public class QueryRequest {
     @NotNull(message = "Course must be selected.")
     private Long courseId;
 
-    @NotNull(message = "User must be specified.")
-    private Long userId;
+    @NotNull(message = "Profile must be specified.")
+    private Long profileId;
 
 }

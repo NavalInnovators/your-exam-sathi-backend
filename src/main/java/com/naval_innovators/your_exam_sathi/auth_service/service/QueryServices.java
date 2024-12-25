@@ -12,5 +12,5 @@ import java.util.List;
 public interface QueryServices {
 
     public UserQuery submitQuery(QueryRequest queryRequest);
-    public List<UserQueryResponse> getUserQueries(Long userId);
+    public List<UserQueryResponse> getUserQueries(Long profileId);
 }

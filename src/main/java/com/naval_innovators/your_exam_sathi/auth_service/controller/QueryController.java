@@ -25,20 +25,14 @@ public class QueryController {
         return new ResponseEntity<>("Query has been Successfully Submitted!!", HttpStatus.CREATED);
     }
 
-    // @GetMapping("path")
-    // public String getMethodName(@RequestParam String param) {
-    // return new String();
-    // }
+    @GetMapping("/profile/{profileId}")
+    public List<UserQueryResponse> getUserQueries(@PathVariable Long profileId) {
+        List<UserQueryResponse> userQueries = queryService.getUserQueries(profileId);
 
-    @GetMapping("/user/{userId}")
-    public List<UserQueryResponse> getUserQueries(@PathVariable Long userId) {
-        List<UserQueryResponse> userQueries = queryService.getUserQueries(userId);
-
-        if(userQueries.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No queries found for the given user ID.");
+        if (userQueries.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No queries found for the given profile ID.");
         }
 
         return userQueries;
-
     }
 }
