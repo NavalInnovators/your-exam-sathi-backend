@@ -10,7 +10,7 @@ import java.util.Set;
 public interface ProfileService {
     public boolean enrollToCourse(Long profileId,Long courseId);
     
-    public Set<Course> getCoursesByUserId(Long userId);
+    public Set<Course> getCoursesByUserId(Long profileId);
 
     public Boolean setProfileDetails(Long profileId, ProfileDto profileDto);
 
