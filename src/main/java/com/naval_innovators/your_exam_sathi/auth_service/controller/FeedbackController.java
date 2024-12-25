@@ -4,85 +4,25 @@ import com.naval_innovators.your_exam_sathi.auth_service.dtos.FeedbackDTO;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Feedback;
 import com.naval_innovators.your_exam_sathi.auth_service.service.FeedbackService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@Slf4j
 @RestController
-@CrossOrigin
-@RequiredArgsConstructor
 @RequestMapping("/api/feedback")
 public class FeedbackController {
 
-    private final FeedbackService feedbackService;
+    @Autowired
+    private FeedbackService feedbackService;
 
-<<<<<<< HEAD
-    @PostMapping("/submit/{profileId}")
-    public ResponseEntity<Map<String, Object>> submitFeedback(
-            @PathVariable Long profileId,
-            @Valid @RequestBody FeedbackDTO feedbackDTO) {
-=======
-    @PostMapping("/submit")
-    public ResponseEntity<Map<String, Object>> submitFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) {
->>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
-        Map<String, Object> response = new HashMap<>();
+    @PostMapping
+    public ResponseEntity<String> submitFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) {
         try {
-            feedbackDTO.setProfileId(profileId);
             Feedback feedback = feedbackService.submitFeedback(feedbackDTO);
-            response.put("feedback", feedback);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return ResponseEntity.ok("Feedback submitted successfully with ID: " + feedback.getId());
         } catch (IllegalArgumentException e) {
-<<<<<<< HEAD
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            response.put("error", "An unexpected error occurred.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-=======
-            log.error("Error submitting feedback: " + e.getMessage());
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("Unexpected error: " + e.getMessage());
-            response.put("error", "An unexpected error occurred.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<Map<String, Object>> getAllFeedbacks() {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<Feedback> feedbacks = feedbackService.getAllFeedbacks();
-            response.put("feedbacks", feedbacks);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Error retrieving feedbacks: " + e.getMessage());
-            response.put("error", "An error occurred while fetching feedback.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
->>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
-        }
-    }
-
-
-    @GetMapping("/all")
-    public ResponseEntity<Map<String, Object>> getAllFeedbacks() {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<Feedback> feedbacks = feedbackService.getAllFeedbacks();
-            response.put("feedbacks", feedbacks);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Error retrieving feedbacks: " + e.getMessage());
-            response.put("error", "An error occurred while fetching feedback.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

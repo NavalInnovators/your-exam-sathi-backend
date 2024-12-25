@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,24 +19,11 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-<<<<<<< HEAD
-    @Column(name = "feedback") // Made nullable to indicate it's optional
-    private String feedback;
-=======
-    @Column(name = "feedback", nullable = false)
+    @Column(nullable = false)
     private String textFeedback;
->>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
 
-    @Column(name = "star_rating", nullable = false)
-    private Integer starRating;
+    @ManyToOne(fetch = FetchType.LAZY) // Many feedbacks can belong to one user
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-<<<<<<< HEAD
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id", nullable = false) // Enforce non-null profile mapping
-=======
-    @ManyToOne
-    @JoinColumn(name = "profile_id")
->>>>>>> e4b042239cb611862202ed8ebade893a153f6eca
-    private Profile profile;
 }
-
