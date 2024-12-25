@@ -26,6 +26,7 @@ public class JWTFilter extends OncePerRequestFilter {
         for (String s : permittedUri) {
             if (uri.startsWith(s)) {
                 filterChain.doFilter(request, response);
+                return;
             }
         }
         String authHeader = request.getHeader("Authorization");
