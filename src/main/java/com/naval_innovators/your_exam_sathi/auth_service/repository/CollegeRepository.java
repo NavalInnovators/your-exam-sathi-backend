@@ -15,5 +15,6 @@ public interface CollegeRepository extends JpaRepository<College, Long> {
 //
 //    @Query("SELECT c FROM College c WHERE c.university.id = :universityId")
 //    Optional<College> findByUniversityId(@Param("universityId") Long universityId);
+    Optional<College> findByUniversity(University university);
 
 }
