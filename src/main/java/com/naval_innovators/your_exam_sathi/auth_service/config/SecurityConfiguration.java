@@ -1,5 +1,7 @@
 package com.naval_innovators.your_exam_sathi.auth_service.config;
 
+import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
+import com.naval_innovators.your_exam_sathi.auth_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,39 +31,42 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfiguration  {
 
 	private final CustomUserDetailsServiceImpl customUserDetailsService;
+	private final ProfileRepository profileRepository;
+	private final UserRepository userRepository;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public JwtUtil jwtUtil() {
 		return new JwtUtil();
 	}
-	
+
 	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtUtil());
-	        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
-		  http
-		  .csrf(csrf -> csrf.disable())
-          .authorizeHttpRequests(
-        	  authorize -> authorize
-              .requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/course/all").permitAll()
-             .anyRequest().authenticated() // Require authentication for any other request
-          )
-				  .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				  .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-				  .addFilterBefore(new JWTFilter(jwtUtil(),customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
-	
-	
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtUtil(), profileRepository, userRepository);
+		customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
+		http
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(
+						authorize -> authorize
+								.requestMatchers("/api/auth/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/course/all","/api/university/all", "/api/college/university/**").permitAll()
+								.anyRequest().authenticated() // Require authentication for any other request
+
+				)
+				.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JWTFilter(jwtUtil(),customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
+
+
 	@Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-	
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+
 
 }
