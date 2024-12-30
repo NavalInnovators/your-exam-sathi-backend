@@ -24,6 +24,11 @@ import com.naval_innovators.your_exam_sathi.auth_service.service.implementation.
 import com.naval_innovators.your_exam_sathi.auth_service.service.implementation.RedisService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -49,6 +54,7 @@ public class SecurityConfiguration  {
 		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),jwtUtil(), profileRepository, userRepository);
 		customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
 		http
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(
 						authorize -> authorize
@@ -66,6 +72,19 @@ public class SecurityConfiguration  {
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5500"));
+		configuration.setAllowedMethods(Arrays.asList( "POST", "GET","PUT","DELETE","PATCH","OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("*")); // Allow necessary headers
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 
 

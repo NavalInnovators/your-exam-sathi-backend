@@ -1,6 +1,9 @@
 package com.naval_innovators.your_exam_sathi.auth_service.config;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
 import com.naval_innovators.your_exam_sathi.auth_service.models.User;
@@ -53,12 +56,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		try {
+//			String requestBody = new BufferedReader(new InputStreamReader(request.);
+//			System.out.println("Request Body: " + requestBody);
 			// Deserialize the login request
+
 			LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
 			// Determine whether to use username or email for authentication
 			String identifier = loginRequest.getUserName() != null ? loginRequest.getUserName()
 					: loginRequest.getEmail();
-
+			System.out.println("IDENTIFIER___ "+identifier +"--Password="+loginRequest.getPassword());
 			// Create the authentication token
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 					identifier, loginRequest.getPassword());
