@@ -64,7 +64,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 			// Determine whether to use username or email for authentication
 			String identifier = loginRequest.getUserName() != null ? loginRequest.getUserName()
 					: loginRequest.getEmail();
-			System.out.println("IDENTIFIER___ "+identifier +"--Password="+loginRequest.getPassword());
+//			System.out.println("IDENTIFIER___ "+identifier +"--Password="+loginRequest.getPassword());
 			// Create the authentication token
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 					identifier, loginRequest.getPassword());
