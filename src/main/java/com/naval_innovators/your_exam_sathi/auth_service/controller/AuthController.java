@@ -3,6 +3,7 @@ package com.naval_innovators.your_exam_sathi.auth_service.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.naval_innovators.your_exam_sathi.auth_service.config.JwtUtil;
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.EmailOtpRequest;
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpRequest;
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.OtpResponse;
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.SignupRequest;
 import com.naval_innovators.your_exam_sathi.auth_service.service.OtpService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.UserServices;
 import com.naval_innovators.your_exam_sathi.auth_service.service.implementation.RedisService;
@@ -102,4 +99,6 @@ public class AuthController {
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
+
+
 }
