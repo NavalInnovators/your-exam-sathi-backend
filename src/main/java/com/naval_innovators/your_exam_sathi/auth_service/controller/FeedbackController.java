@@ -27,27 +27,36 @@ public class FeedbackController {
     public ResponseEntity<Map<String, Object>> submitFeedback(
             @PathVariable Long profileId,
             @Valid @RequestBody FeedbackDTO feedbackDTO) {
+
         Map<String, Object> response = new HashMap<>();
         try {
-            feedbackDTO.setProfileId(profileId); // Set the profileId in the DTO
+
+            feedbackDTO.setProfileId(profileId);
             Feedback feedback = feedbackService.submitFeedback(feedbackDTO);
+            response.put("message", "Feedback submitted successfully!");
             response.put("feedback", feedback);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
+
         } catch (IllegalArgumentException e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
         } catch (Exception e) {
             response.put("error", "An unexpected error occurred.");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
+
+
 
     @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllFeedbacks() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<Feedback> feedbacks = feedbackService.getAllFeedbacks();
-            response.put("feedbacks", feedbacks);
+            // Call the updated service method to get DTOs
+            List<FeedbackDTO> feedbackDTOs = feedbackService.getAllFeedbacks();
+            response.put("feedbacks", feedbackDTOs);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error retrieving feedbacks: " + e.getMessage());
@@ -55,4 +64,6 @@ public class FeedbackController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }

@@ -20,5 +20,5 @@ public interface FeedbackService {
      *
      * @return List of all feedbacks.
      */
-    List<Feedback> getAllFeedbacks();
+    List<FeedbackDTO> getAllFeedbacks();
 }

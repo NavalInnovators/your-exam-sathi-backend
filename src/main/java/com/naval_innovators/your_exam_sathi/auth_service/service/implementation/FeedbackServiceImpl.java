@@ -23,11 +23,6 @@ public class FeedbackServiceImpl implements FeedbackService {
         Profile profile = profileRepository.findById(feedbackDTO.getProfileId())
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found."));
 
-        // Ensure profile is linked with a user
-        if (profile.getUser() == null) {
-            throw new IllegalArgumentException("Profile is not associated with a user.");
-        }
-
         Feedback feedback = Feedback.builder()
                 .starRating(feedbackDTO.getStarRating())
                 .feedback(feedbackDTO.getFeedback() != null ? feedbackDTO.getFeedback() : "")
@@ -40,7 +35,16 @@ public class FeedbackServiceImpl implements FeedbackService {
 
 
     @Override
-    public List<Feedback> getAllFeedbacks() {
-        return feedbackRepository.findAll();
+    public List<FeedbackDTO> getAllFeedbacks() {
+        // **Changed**: Mapping Feedback entities to FeedbackDTOs
+        return feedbackRepository.findAll()
+                .stream()
+                .map(feedback -> FeedbackDTO.builder()
+                        .starRating(feedback.getStarRating()) // **Changed**: Map starRating
+                        .feedback(feedback.getFeedback()) // **Changed**: Map feedback text
+                        .profileId(feedback.getProfile().getId()) // **Changed**: Map profileId
+                        .build())
+                .toList(); // **Changed**: Convert to List<FeedbackDTO>
     }
+
 }
