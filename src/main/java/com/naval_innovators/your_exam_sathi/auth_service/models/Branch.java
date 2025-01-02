@@ -30,6 +30,14 @@ public class Branch {
     )
     private Set<College> colleges = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "branch_course", // Custom join table name
+        joinColumns = @JoinColumn(name = "branch_id"), // Foreign key for Branch
+        inverseJoinColumns = @JoinColumn(name = "course_id") // Foreign key for Course
+    )
+    private Set<Course> courses;
+
     // One branch can have multiple Profiles
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Profile> profiles;
