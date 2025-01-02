@@ -1,15 +1,12 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
-
-import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileUpdateDTO;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
+import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileUpdateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -17,45 +14,34 @@ import java.util.Map;
 @RequestMapping("/api/profile/{profileId}")
 public class ProfileUpdateController {
 
-    private final ProfileService profileService;
+    private final ProfileUpdateService profileUpdateService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getProfile(@PathVariable Long profileId) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ProfileUpdateDTO> getProfile(@PathVariable Long profileId) {
         try {
-            ProfileDto profileDto = profileService.getProfile(profileId);
-            if (profileDto == null) {
-                response.put("profile", "NO PROFILE FOUND");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            ProfileUpdateDTO profileUpdateDto = profileUpdateService.getProfile(profileId);
+            if (profileUpdateDto == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-            response.put("profile", profileDto);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseEntity.ok(profileUpdateDto);
         } catch (Exception e) {
-            response.put("profile", "ERROR: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Map<String,Object>> updateProfile(
+    @PutMapping
+    public ResponseEntity<String> updateProfile(
             @PathVariable Long profileId,
-            @RequestBody ProfileDto profileDto){
-        Map<String, Object> response = new HashMap<>();
-
-        try{
-            if(profileService.setProfileDetails(profileId, profileDto)){
-                response.put("update-profile", "SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else{
-                response.put("update-profile", "FAILED");
-                response.put("error", "Profile not found");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            @RequestBody ProfileUpdateDTO profileUpdateDto) {
+        try {
+            boolean isUpdated = profileUpdateService.updateProfileDetails(profileId, profileUpdateDto);
+            if (isUpdated) {
+                return ResponseEntity.ok("Profile Updated Successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile not found");
             }
-        } catch (Exception e){
-            response.put("update-profile", "FAILED");
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    
 }
