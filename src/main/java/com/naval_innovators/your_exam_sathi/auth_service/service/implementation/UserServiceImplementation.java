@@ -88,9 +88,9 @@ public class UserServiceImplementation implements UserServices {
 //		send email to inform that the account had been created.
 		EmailDetails emailDetails = new EmailDetails();
 		emailDetails.setRecipient(user.getEmail());
-		emailDetails.setUsername(user.getUserName());
+		emailDetails.setUsername(signupRequest.getFirstName());
 
-		emailService.sendVerificationMail(emailDetails);
+		emailService.sendWelcomeMail(emailDetails);
 
 //		we need to send the otp to the phone'
 		Map<String, Object> tokens = new HashMap<>();

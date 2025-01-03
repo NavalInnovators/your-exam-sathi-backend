@@ -88,17 +88,5 @@ public class AuthController {
 	// return null;
 	// }
 
-	@PostMapping(path = "/otp/validate")
-	public ResponseEntity<?> validateOtp(@Validated @RequestBody EmailOtpRequest emailOtpRequest) {
-		String message = otpService.validateOtp(emailOtpRequest);
-		Map<String, String> response = new HashMap<>();
-		response.put("message", message);
-		if (message.equals("Account Verified")) {
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		}
-	}
-
 
 }

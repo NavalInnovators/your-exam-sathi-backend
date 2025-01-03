@@ -42,5 +42,4 @@ public class Branch {
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Profile> profiles;
 
-    private int year;
 }

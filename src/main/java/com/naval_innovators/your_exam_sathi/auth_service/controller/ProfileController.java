@@ -1,5 +1,6 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.CourseResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ExtraDetailsDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
@@ -13,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -40,8 +39,8 @@ public class ProfileController {
     @GetMapping("/courses")
     public ResponseEntity<?> getCoursesByUserId(@PathVariable Long profileId) {
         try{
-            Set<Course> courses = profileService.getCoursesByUserId(profileId);
-            return ResponseEntity.ok(courses);
+            List<CourseResponse> response = profileService.getCoursesByProfileId(profileId);
+            return ResponseEntity.ok(response);
         } 
         catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -73,12 +72,7 @@ public class ProfileController {
             response.put("set-profile", "SUCCESS");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-
-
-
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-
-
     }
 
     @PostMapping("/set-details")
