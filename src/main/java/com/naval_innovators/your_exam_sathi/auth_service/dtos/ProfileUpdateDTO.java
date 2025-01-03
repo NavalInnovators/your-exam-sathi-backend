@@ -14,12 +14,8 @@ import java.time.LocalDate;
 @Setter
 public class ProfileUpdateDTO {
 
-    @NotNull(message = "First name cannot be null")
-    @NotEmpty(message = "First name cannot be empty")
     private String firstName;
 
-    @NotNull(message = "Last name cannot be null")
-    @NotEmpty(message = "Last name cannot be empty")
     private String lastName;
 
     private String avatarUrl;
@@ -27,10 +23,8 @@ public class ProfileUpdateDTO {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotNull(message = "Date of Birth cannot be null")
-    @Past(message = "Date of Birth must be a past date")
     private LocalDate dateOfBirth;
-//
+
 //    private String userName;
 //
 //    private String email;
