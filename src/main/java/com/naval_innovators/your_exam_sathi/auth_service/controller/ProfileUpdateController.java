@@ -3,6 +3,7 @@ package com.naval_innovators.your_exam_sathi.auth_service.controller;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileUpdateDTO;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileUpdateService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +31,21 @@ public class ProfileUpdateController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateProfile(
+    public ResponseEntity<?> updateProfile(
             @PathVariable Long profileId,
-            @RequestBody ProfileUpdateDTO profileUpdateDto) {
+            @Valid @RequestBody ProfileUpdateDTO profileUpdateDto) {
         try {
             boolean isUpdated = profileUpdateService.updateProfileDetails(profileId, profileUpdateDto);
             if (isUpdated) {
-                return ResponseEntity.ok("Profile Updated Successfully");
+                return ResponseEntity.ok()
+                        .body("Profile Updated Successfully");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Profile not found");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred");
         }
     }
 }

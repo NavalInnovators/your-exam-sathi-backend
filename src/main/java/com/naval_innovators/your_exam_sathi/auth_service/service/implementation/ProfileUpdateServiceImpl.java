@@ -22,22 +22,16 @@ public class ProfileUpdateServiceImpl implements ProfileUpdateService {
         Optional<Profile> profile = profileRepository.findById(profileId);
         if (profile.isPresent()) {
             Profile profileEntity = profile.get();
-            profileEntity.setFirstName(profileUpdateDto.getFirstName());
-            profileEntity.setLastName(profileUpdateDto.getLastName());
+            profileEntity.setFirstName(profileUpdateDto.getFirstName().trim());
+            profileEntity.setLastName(profileUpdateDto.getLastName().trim());
             profileEntity.setAvatarUrl(profileUpdateDto.getAvatarUrl());
-//            profileEntity.getUser().setUserName(profileUpdateDto.getUserName());
-//            profileEntity.getUser().setEmail(profileUpdateDto.getEmail());
-//            profileEntity.getUser().setPhone(profileUpdateDto.getPhone());
             profileEntity.setDateOfBirth(profileUpdateDto.getDateOfBirth());
             profileEntity.setGender(profileUpdateDto.getGender());
             profileRepository.save(profileEntity);
 
             return true;
         }
-        else{
-
-            return false;
-        }
+        return false;
     }
 
     @Override

@@ -22,11 +22,11 @@ public class ProfileUpdateDtoMapper {
         profileUpdateDto.setFirstName(profileEntity.getFirstName());
         profileUpdateDto.setLastName(profileEntity.getLastName());
         profileUpdateDto.setAvatarUrl(profileEntity.getAvatarUrl());
-        profileUpdateDto.setEmail(profileEntity.getUser().getEmail());
+//        profileUpdateDto.setEmail(profileEntity.getUser().getEmail());
         profileUpdateDto.setDateOfBirth(profileEntity.getDateOfBirth());
         profileUpdateDto.setGender(profileEntity.getGender());
-        profileUpdateDto.setPhone(profileEntity.getUser().getPhone());
-        profileUpdateDto.setUserName(profileEntity.getUser().getUserName());
+//        profileUpdateDto.setPhone(profileEntity.getUser().getPhone());
+//        profileUpdateDto.setUserName(profileEntity.getUser().getUserName());
         return profileUpdateDto;
 
     }
