@@ -19,8 +19,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ProfileRepository profileRepository;
 
     @Override
-    public Feedback submitFeedback(FeedbackDTO feedbackDTO) {
-        Profile profile = profileRepository.findById(feedbackDTO.getProfileId())
+    public Feedback submitFeedback(Long profileId, FeedbackDTO feedbackDTO) {
+        Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found."));
 
         Feedback feedback = Feedback.builder()
@@ -36,15 +36,13 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedbackDTO> getAllFeedbacks() {
-        // **Changed**: Mapping Feedback entities to FeedbackDTOs
         return feedbackRepository.findAll()
                 .stream()
                 .map(feedback -> FeedbackDTO.builder()
-                        .starRating(feedback.getStarRating()) // **Changed**: Map starRating
-                        .feedback(feedback.getFeedback()) // **Changed**: Map feedback text
-                        .profileId(feedback.getProfile().getId()) // **Changed**: Map profileId
+                        .starRating(feedback.getStarRating())
+                        .feedback(feedback.getFeedback())
                         .build())
-                .toList(); // **Changed**: Convert to List<FeedbackDTO>
+                .toList(); //
     }
 
 }
