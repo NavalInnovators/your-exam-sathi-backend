@@ -1,6 +1,7 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.CourseResponse;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.responseDTOs.AppResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.service.CoursesService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,11 @@ public class CoursesController {
     private final CoursesService coursesService;
 
     @PostMapping("/add")
-    public ResponseEntity<Map<String, Boolean>> addCourse(@RequestBody Course course) {
+    public ResponseEntity<AppResponse> addCourse(@RequestBody Course course) {
         coursesService.addCourse(course);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("success", true);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+       AppResponse appResponse = new AppResponse();
+        appResponse.setResponse(true);
+        return new ResponseEntity<>(appResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
