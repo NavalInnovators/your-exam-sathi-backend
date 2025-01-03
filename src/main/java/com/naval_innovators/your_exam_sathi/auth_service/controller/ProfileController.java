@@ -1,7 +1,9 @@
 package com.naval_innovators.your_exam_sathi.auth_service.controller;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.CourseResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ExtraDetailsDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.responseDTOs.AppResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
@@ -13,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -27,11 +27,11 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/course/{courseId}/enroll")
-    public ResponseEntity<Map<String, Boolean>> enrollToCourse(@PathVariable long profileId, @PathVariable long courseId) {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("enrolled", false);
+    public ResponseEntity<AppResponse> enrollToCourse(@PathVariable long profileId, @PathVariable long courseId) {
+        AppResponse response = new AppResponse();
+
         if (profileService.enrollToCourse(profileId,courseId)){
-            response.put("enrolled", true);
+            response.setResponse(true);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -40,8 +40,8 @@ public class ProfileController {
     @GetMapping("/courses")
     public ResponseEntity<?> getCoursesByUserId(@PathVariable Long profileId) {
         try{
-            Set<Course> courses = profileService.getCoursesByUserId(profileId);
-            return ResponseEntity.ok(courses);
+            List<CourseResponse> response = profileService.getCoursesByProfileId(profileId);
+            return ResponseEntity.ok(response);
         } 
         catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -65,29 +65,24 @@ public class ProfileController {
 
 
     @PostMapping("/set")
-    public ResponseEntity<Map<String,Object>> setProfile(@PathVariable Long profileId, @RequestBody ProfileDto profileDto) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("set-profile", "NO PROFILE FOUND");
+    public ResponseEntity<AppResponse> setProfile(@PathVariable Long profileId, @RequestBody ProfileDto profileDto) {
+        AppResponse response = new AppResponse();
+
 
         if (profileService.setProfileDetails(profileId, profileDto)) {
-            response.put("set-profile", "SUCCESS");
+            response.setResponse(true);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-
-
-
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-
-
     }
 
     @PostMapping("/set-details")
-    public ResponseEntity<Map<String,Object>> setProfileDetails(@PathVariable Long profileId, @RequestBody ExtraDetailsDto extraDetailsDto) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("set-details", false);
+    public ResponseEntity<AppResponse> setProfileDetails(@PathVariable Long profileId, @RequestBody ExtraDetailsDto extraDetailsDto) {
+        AppResponse response = new AppResponse();
+
         try {
             if (profileService.setExtraDetails(profileId, extraDetailsDto)) {
-                response.put("set-details", true);
+                response.setResponse(true);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }catch (Exception e) {

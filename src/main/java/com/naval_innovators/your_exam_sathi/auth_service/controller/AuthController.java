@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.*;
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.responseDTOs.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,19 +41,19 @@ public class AuthController {
 	private final JwtUtil jwtUtil;
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,
-										  HttpServletResponse httpResponse) {
+	public ResponseEntity<AuthResponse> registerUser(@Validated @RequestBody SignupRequest signupRequest,
+													 HttpServletResponse httpResponse) {
 		try {
 			Map<String, Object> tokens = userService.registerNewUser(signupRequest);
-			Map<String, Object> response = new HashMap<>();
-			response.put("message", "User registered successfully.");
-			response.put("token", tokens.get("accessToken"));
-			response.put("profileId", tokens.get("profileId"));
+			AuthResponse authResponse = new AuthResponse();
+			authResponse.setMessage("User registered successfully.");
+			authResponse.setAccessToken(tokens.get("accessToken").toString());
+			authResponse.setProfileId((Long)tokens.get("profileId"));
 			httpResponse.addCookie(jwtUtil.setHttpCookie((String) tokens.get("refreshToken")));
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
+			return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			Map<String, String> errorResponse = new HashMap<>();
-			errorResponse.put("message", e.getMessage());
+			AuthResponse errorResponse = new AuthResponse();
+			errorResponse.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 	}
@@ -87,18 +88,6 @@ public class AuthController {
 	//// userService.loginUser(loginRequest);
 	// return null;
 	// }
-
-	@PostMapping(path = "/otp/validate")
-	public ResponseEntity<?> validateOtp(@Validated @RequestBody EmailOtpRequest emailOtpRequest) {
-		String message = otpService.validateOtp(emailOtpRequest);
-		Map<String, String> response = new HashMap<>();
-		response.put("message", message);
-		if (message.equals("Account Verified")) {
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		}
-	}
 
 
 }

@@ -90,7 +90,7 @@ public class UserServiceImplementation implements UserServices {
 		emailDetails.setRecipient(user.getEmail());
 		emailDetails.setUsername(user.getUserName());
 
-		emailService.sendVerificationMail(emailDetails);
+		emailService.sendWelcomeMail(emailDetails);
 
 //		we need to send the otp to the phone'
 		Map<String, Object> tokens = new HashMap<>();

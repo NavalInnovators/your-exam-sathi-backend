@@ -1,11 +1,15 @@
 package com.naval_innovators.your_exam_sathi.auth_service.service.implementation;
 
+import com.naval_innovators.your_exam_sathi.auth_service.dtos.CourseResponse;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ExtraDetailsDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.ProfileDto;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.mapper.ExtraDetailsDtoMapper;
 import com.naval_innovators.your_exam_sathi.auth_service.dtos.mapper.ProfileDtoMapper;
+import com.naval_innovators.your_exam_sathi.auth_service.models.Branch;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Course;
+import com.naval_innovators.your_exam_sathi.auth_service.models.CourseCode;
 import com.naval_innovators.your_exam_sathi.auth_service.models.Profile;
+import com.naval_innovators.your_exam_sathi.auth_service.models.University;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.CourseRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.repository.ProfileRepository;
 import com.naval_innovators.your_exam_sathi.auth_service.service.ProfileService;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,15 +47,47 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Set<Course> getCoursesByUserId(Long profileId) {
-        return profileRepository.findByUserIdWithCourses(profileId)
-        .orElseThrow(() -> new RuntimeException("You have not enrolled in any Course!"))
-        .getCourses();
+    public List<CourseResponse> getCoursesByProfileId(Long profileId) {
+        // Step 1: Fetch the profile using the profileId
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found with id: " + profileId));
+
+        // Step 2: Get the courses associated with the profile (using the relationship
+        // table)
+        Set<Course> courses = profile.getCourses(); // Assuming 'courses' is a many-to-many relationship in Profile
+
+        // Step 3: Map the courses to CourseResponse DTO
+        return courses.stream()
+                .map(course -> {
+                    // Get the university name(s)
+                    String universityName = course.getUniversities().stream()
+                            .map(University::getName)
+                            .findFirst()
+                            .orElse("Unknown");
+
+                    // Get the branch names related to this course
+                    List<String> branchNames = course.getBranches().stream()
+                            .map(Branch::getName)
+                            .collect(Collectors.toList());
+
+                    // Get the course codes
+                    List<String> courseCodes = course.getCourseCodes().stream()
+                            .map(CourseCode::getCourseCode)
+                            .collect(Collectors.toList());
+
+                    return new CourseResponse(
+                            course.getId(),
+                            course.getName(),
+                            course.getYear(),
+                            universityName,
+                            branchNames,
+                            courseCodes);
+                })
+                .collect(Collectors.toList());
     }
 
-
     @Override
-    public  Boolean setProfileDetails(Long profileId, ProfileDto profileDto) {
+    public Boolean setProfileDetails(Long profileId, ProfileDto profileDto) {
         Optional<Profile> profile = profileRepository.findById(profileId);
         if (profile.isPresent()) {
             Profile profileEntity = profile.get();
@@ -66,8 +103,7 @@ public class ProfileServiceImpl implements ProfileService {
             profileRepository.save(profileEntity);
 
             return true;
-        }
-        else{
+        } else {
 
             return false;
         }
