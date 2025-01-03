@@ -24,44 +24,35 @@ public class FeedbackController {
     private final FeedbackService feedbackService;
 
     @PostMapping("/submit/{profileId}")
-    public ResponseEntity<Map<String, Object>> submitFeedback(
+    public ResponseEntity<FeedbackDTO> submitFeedback(
             @PathVariable Long profileId,
             @Valid @RequestBody FeedbackDTO feedbackDTO) {
-
-        Map<String, Object> response = new HashMap<>();
         try {
-
-            feedbackDTO.setProfileId(profileId);
-            Feedback feedback = feedbackService.submitFeedback(feedbackDTO);
-            response.put("message", "Feedback submitted successfully!");
-            response.put("feedback", feedback);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-
+            Feedback feedback = feedbackService.submitFeedback(profileId, feedbackDTO);
+            FeedbackDTO responseDTO = FeedbackDTO.builder()
+                    .starRating(feedback.getStarRating())
+                    .feedback(feedback.getFeedback())
+                    .build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
         } catch (IllegalArgumentException e) {
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
+            log.error("Error submitting feedback: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            response.put("error", "An unexpected error occurred.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Unexpected error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
 
 
     @GetMapping("/all")
-    public ResponseEntity<Map<String, Object>> getAllFeedbacks() {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<List<FeedbackDTO>> getAllFeedbacks() {
         try {
-            // Call the updated service method to get DTOs
             List<FeedbackDTO> feedbackDTOs = feedbackService.getAllFeedbacks();
-            response.put("feedbacks", feedbackDTOs);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseEntity.ok(feedbackDTOs);
         } catch (Exception e) {
             log.error("Error retrieving feedbacks: " + e.getMessage());
-            response.put("error", "An error occurred while fetching feedback.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

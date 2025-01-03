@@ -20,11 +20,11 @@ public class ProfileUpdateDTO {
     private Gender gender;
 
     private LocalDate dateOfBirth;
-
-    private String userName;
-
-    private String email;
-
-    private String phone;
+//
+//    private String userName;
+//
+//    private String email;
+//
+//    private String phone;
 
 }
