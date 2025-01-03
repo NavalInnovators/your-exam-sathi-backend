@@ -33,7 +33,7 @@ public class ProfileUpdateController {
     @PutMapping
     public ResponseEntity<?> updateProfile(
             @PathVariable Long profileId,
-            @Valid @RequestBody ProfileUpdateDTO profileUpdateDto) {
+            @RequestBody ProfileUpdateDTO profileUpdateDto) {
         try {
             boolean isUpdated = profileUpdateService.updateProfileDetails(profileId, profileUpdateDto);
             if (isUpdated) {
