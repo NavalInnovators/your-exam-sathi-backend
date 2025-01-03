@@ -21,4 +21,7 @@ public class FeedbackDTO {
 
     private String feedback; // Optional field
 
+    @NotNull(message = "Profile ID must not be null")
+    private Long profileId;
+
 }

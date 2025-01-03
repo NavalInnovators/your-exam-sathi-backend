@@ -22,59 +22,59 @@ public class EducationDetailsController {
     private final EducationDetailsService educationDetailsService;
 
     // Set Education Details
-//    @PostMapping("/set")
-//    public ResponseEntity<Map<String, Object>> setEducationDetails(
-//            @PathVariable Long profileId,
-//            @Valid @RequestBody EducationDetailsDTO educationDetailsDTO) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("set-education-details", "FAILURE");
-//
-//        try {
-//            educationDetailsService.setEducationDetails(educationDetailsDTO, profileId);
-//            response.put("set-education-details", "SUCCESS");
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (RuntimeException e) {
-//            log.error("Error while setting education details for profileId {}: {}", profileId, e.getMessage());
-//            response.put("error", e.getMessage());
-//            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); // Return 404 when entity not found
-//        }
-//    }
-
-    // Update Education Details
-    @PutMapping("/update")
-    public ResponseEntity<EducationDetailsDTO> updateEducationDetails(
+    @PostMapping("/set")
+    public ResponseEntity<Map<String, Object>> setEducationDetails(
             @PathVariable Long profileId,
             @Valid @RequestBody EducationDetailsDTO educationDetailsDTO) {
 
-        try {
-            // Map the DTO to the Profile entity and save the changes
-            educationDetailsService.setEducationDetails(educationDetailsDTO, profileId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("set-education-details", "FAILURE");
 
-            // Return the updated EducationDetailsDTO
-            return new ResponseEntity<>(educationDetailsDTO, HttpStatus.OK);
+        try {
+            educationDetailsService.setEducationDetails(educationDetailsDTO, profileId);
+            response.put("set-education-details", "SUCCESS");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            log.error("Error while setting education details for profileId {}: {}", profileId, e.getMessage());
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); // Return 404 when entity not found
+        }
+    }
+
+    // Update Education Details
+    @PutMapping("/update")
+    public ResponseEntity<Map<String, Object>> updateEducationDetails(
+            @PathVariable Long profileId,
+            @Valid @RequestBody EducationDetailsDTO educationDetailsDTO) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("update-education-details", "FAILURE");
+
+        try {
+            educationDetailsService.setEducationDetails(educationDetailsDTO, profileId);
+            response.put("update-education-details", "SUCCESS");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RuntimeException e) {
             log.error("Error while updating education details for profileId {}: {}", profileId, e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return 404 when entity not found
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); // Return 404 when entity not found
         }
     }
 
     // Get Education Details
     @GetMapping("/get")
-    public ResponseEntity<EducationDetailsDTO> getEducationDetails(@PathVariable Long profileId) {
-        try {
-            // Fetch the EducationDetailsDTO
-            EducationDetailsDTO educationDetailsDTO = educationDetailsService.getEducationDetails(profileId);
+    public ResponseEntity<Map<String, Object>> getEducationDetails(@PathVariable Long profileId) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("education-details", "NO EDUCATION DETAILS FOUND");
 
-            if (educationDetailsDTO != null) {
-                return new ResponseEntity<>(educationDetailsDTO, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return 404 if no education details found
-            }
+        try {
+            EducationDetailsDTO educationDetailsDTO = educationDetailsService.getEducationDetails(profileId);
+            response.put("education-details", educationDetailsDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error while fetching education details for profileId {}: {}", profileId, e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Return 500 for internal errors
+            response.put("error", "Error while fetching education details");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
-
 }
